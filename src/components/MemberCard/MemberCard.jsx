@@ -1,17 +1,25 @@
-import React from "react";
-import GirlIcon from "@mui/icons-material/Girl";
-import WomanIcon from "@mui/icons-material/Woman";
-import Woman2Icon from "@mui/icons-material/Woman2";
-import ElderlyWomanIcon from "@mui/icons-material/ElderlyWoman";
 import BoyIcon from "@mui/icons-material/Boy";
+import ElderlyIcon from "@mui/icons-material/Elderly";
+import ElderlyWomanIcon from "@mui/icons-material/ElderlyWoman";
+import FingerprintIcon from "@mui/icons-material/Fingerprint";
+import GirlIcon from "@mui/icons-material/Girl";
 import ManIcon from "@mui/icons-material/Man";
 import Man2Icon from "@mui/icons-material/Man2";
-import ElderlyIcon from "@mui/icons-material/Elderly";
-import Person2Icon from "@mui/icons-material/Person2";
+import MessageIcon from "@mui/icons-material/Message";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import Person2Icon from "@mui/icons-material/Person2";
+import VerifiedIcon from "@mui/icons-material/Verified";
+import WomanIcon from "@mui/icons-material/Woman";
+import Woman2Icon from "@mui/icons-material/Woman2";
+import Divider from "@mui/material/Divider";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ListItemText from "@mui/material/ListItemText";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
+import React from "react";
 const AGE_MAP = {
   MALE: {
     15: BoyIcon,
@@ -41,13 +49,13 @@ function MemberCard(props) {
     return IconToReturn;
   };
 
-  const { name, gender, age, adharNo, mobileNumber, relationShip } = props;
+  const { name, gender, age, adharNo, mobileNumber, relationShip, verified } =
+    props;
   let Icon = getIconImage();
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleClick = (event) => {
-    debugger;
     setAnchorEl(event.currentTarget);
   };
 
@@ -62,11 +70,20 @@ function MemberCard(props) {
       <div className="d-flex flex-row px-2 justify-content-between align-items-center fs-2 border-bottom border-2 mb-4">
         <div>
           {Icon ? (
-            <Icon style={{ fontSize: "50px", color: "#273196" }} />
+            <Icon style={{ fontSize: "50px", color: "#00B16A" }} />
           ) : (
             <Person2Icon />
-          )}{" "}
-          <span>{name}</span>
+          )}
+          <span>
+            {name}
+            {verified ? (
+              <sup>
+                <VerifiedIcon style={{ color: "#00F966" }} />
+              </sup>
+            ) : (
+              <></>
+            )}
+          </span>
         </div>
         <div>
           <div
@@ -87,6 +104,48 @@ function MemberCard(props) {
             }}
           >
             <Typography sx={{ p: 2 }}>Verify Adhar</Typography>
+            <List>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    handleClose();
+                    props.handleChangeForVerify("OTP");
+                  }}
+                >
+                  <ListItemIcon>
+                    <MessageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="OTP" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    handleClose();
+                    props.handleChangeForVerify("IRIS");
+                  }}
+                >
+                  <ListItemIcon>
+                    <FingerprintIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="IRIS" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton
+                  onClick={() => {
+                    handleClose();
+                    props.handleChangeForVerify("BIOMETRIC");
+                  }}
+                >
+                  <ListItemIcon>
+                    <FingerprintIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="BIOMETRIC" />
+                </ListItemButton>
+              </ListItem>
+            </List>
+            <Divider />
           </Popover>
         </div>
       </div>

@@ -7,6 +7,9 @@ import { LINK_MEMBER_LIST } from "../../routes";
 class HomePage extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      searchKey: "",
+    };
   }
 
   render() {

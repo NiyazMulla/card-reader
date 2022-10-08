@@ -6,7 +6,7 @@ function ButtonCustom(props) {
     <>
       <Button
         variant="contained"
-        style={{ backgroundColor: "#273196" }}
+        style={{ backgroundColor: "#00B16A" }}
         onClick={props.onClick}
       >
         {" "}
