@@ -4,15 +4,34 @@ import PageTitle from "../../components/PageTitle";
 import DialogCustom from "../../components/DialogCustom";
 import OtpInput from "react-otp-input";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
+import { getMembersDetails } from "../../api/rationcard";
 class MemberList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedOptionToVerify: "",
       openDialog: false,
+      memberList: [],
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
+
+  componentDidMount() {
+    this.init();
+  }
+  init = () => {
+    getMembersDetails("04011010270")
+      .then((res) => {
+        if (res.status) {
+          this.setState({
+            memberList: res.data,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   handleChange = (otp) => {
     this.setState({
@@ -25,6 +44,28 @@ class MemberList extends Component {
       openDialog: true,
     });
   }
+
+  renderMembers = () => {
+    return this.state.memberList.length > 0 ? (
+      this.state.memberList.map((member, index) => {
+        return (
+          <div className="w-50 mb-4" key={index}>
+            <MemberCard
+              name={member["MemberName"]}
+              age={parseInt(member["Age"])}
+              gender={member["Gender"].toUpperCase()}
+              handleChangeForVerify={this.chooseOptionToVerify}
+              // verified
+            />
+          </div>
+        );
+      })
+    ) : this.state.memberList.length === 0 ? (
+      <>No Members Found</>
+    ) : (
+      <></>
+    );
+  };
 
   render() {
     return (
@@ -64,64 +105,7 @@ class MemberList extends Component {
         </DialogCustom>
         <PageTitle title={"Members "} />
         <div className="w-100 d-flex flex-row flex-wrap">
-          <div className="w-50 mb-4">
-            <MemberCard
-              name="Niyaz"
-              age={15}
-              gender={"MALE"}
-              handleChangeForVerify={this.chooseOptionToVerify}
-              verified
-            />
-          </div>
-          <div className="w-50 mb-4">
-            <MemberCard
-              name="Niyaz"
-              age={25}
-              gender={"MALE"}
-              handleChangeForVerify={this.chooseOptionToVerify}
-            />
-          </div>
-          <div className="w-50 mb-4">
-            <MemberCard
-              name="Jhon Deo "
-              age={45}
-              gender={"MALE"}
-              handleChangeForVerify={this.chooseOptionToVerify}
-            />
-          </div>
-          <div className="w-50 mb-4">
-            <MemberCard
-              name="Jhon Deo Elder "
-              age={62}
-              gender={"MALE"}
-              handleChangeForVerify={this.chooseOptionToVerify}
-              verified
-            />
-          </div>
-          <div className="w-50 mb-4">
-            <MemberCard
-              name="Lice Ray"
-              age={40}
-              gender={"FEMALE"}
-              handleChangeForVerify={this.chooseOptionToVerify}
-            />
-          </div>
-          <div className="w-50 mb-4">
-            <MemberCard
-              name="Zeda"
-              age={56}
-              gender={"FEMALE"}
-              handleChangeForVerify={this.chooseOptionToVerify}
-            />
-          </div>
-          <div className="w-50 mb-4">
-            <MemberCard
-              name="Zeda Elder"
-              age={65}
-              gender={"FEMALE"}
-              handleChangeForVerify={this.chooseOptionToVerify}
-            />
-          </div>
+          {this.renderMembers()}
         </div>
       </div>
     );

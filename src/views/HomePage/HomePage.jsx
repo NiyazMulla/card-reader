@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import SearchBox from "../../components/SearchBox/SearchBox";
+import { getMembersDetails } from "../../api/rationcard";
 import { LINK_MEMBER_LIST } from "../../routes";
 
 class HomePage extends Component {
@@ -11,6 +12,11 @@ class HomePage extends Component {
       searchKey: "",
     };
   }
+
+  onSearch = () => {
+    this.props.history.push(LINK_MEMBER_LIST);
+    setTimeout(() => {}, 2000);
+  };
 
   render() {
     return (
@@ -27,12 +33,7 @@ class HomePage extends Component {
               <div className="fs-6">Click button to see the result</div>
             </div>
             <div className="">
-              <ButtonCustom
-                label={"Search"}
-                onClick={() => {
-                  this.props.history.push(LINK_MEMBER_LIST);
-                }}
-              />
+              <ButtonCustom label={"Search"} onClick={this.onSearch} />
             </div>
           </div>
         </div>
