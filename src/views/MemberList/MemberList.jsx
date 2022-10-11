@@ -1,10 +1,10 @@
 import React, { Component } from "react";
+import OtpInput from "react-otp-input";
+import { getMembersDetails } from "../../api/rationcard";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
+import DialogCustom from "../../components/DialogCustom";
 import MemberCard from "../../components/MemberCard";
 import PageTitle from "../../components/PageTitle";
-import DialogCustom from "../../components/DialogCustom";
-import OtpInput from "react-otp-input";
-import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
-import { getMembersDetails } from "../../api/rationcard";
 class MemberList extends Component {
   constructor(props) {
     super(props);
@@ -20,17 +20,19 @@ class MemberList extends Component {
     this.init();
   }
   init = () => {
-    getMembersDetails("04011010270")
-      .then((res) => {
-        if (res.status) {
-          this.setState({
-            memberList: res.data,
-          });
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (this.props.location.state?.rationCardNo) {
+      getMembersDetails(this.props.location.state?.rationCardNo)
+        .then((res) => {
+          if (res.status) {
+            this.setState({
+              memberList: res.data,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   };
 
   handleChange = (otp) => {
@@ -55,6 +57,9 @@ class MemberList extends Component {
               age={parseInt(member["Age"])}
               gender={member["Gender"].toUpperCase()}
               handleChangeForVerify={this.chooseOptionToVerify}
+              adharNo={member["AadharNumber"]}
+              relationShip={member["RelationWithFamilyHead"]}
+              mobileNumber={member["Mobilenumber"]}
               // verified
             />
           </div>

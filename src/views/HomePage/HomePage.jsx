@@ -14,7 +14,12 @@ class HomePage extends Component {
   }
 
   onSearch = () => {
-    this.props.history.push(LINK_MEMBER_LIST);
+    this.props.history.push({
+      pathname: LINK_MEMBER_LIST,
+      state: {
+        rationCardNo: this.state.searchKey,
+      },
+    });
     setTimeout(() => {}, 2000);
   };
 
@@ -25,7 +30,14 @@ class HomePage extends Component {
 
         <div className="w-100  d-flex flex-column align-items-center justify-content-center ">
           <div className="search-container">
-            <SearchBox />
+            <SearchBox
+              onChange={(e) => {
+                this.setState({
+                  searchKey: e.target.value,
+                });
+              }}
+              value={this.state.searchKey}
+            />
             <div className="my-4 d-flex flex-column align-items-center  ">
               <div className="fs-3 text-primary">
                 Enter ration card number to be looking for

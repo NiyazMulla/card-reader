@@ -7,7 +7,7 @@ function SearchBox(props) {
       <div>
         <DocumentScannerIcon />
       </div>
-      <input className="border border-0 " />
+      <input className="border border-0 " {...props} />
       <span className="search-icon">
         <SearchIcon />
       </span>
