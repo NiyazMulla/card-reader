@@ -91,12 +91,6 @@ class MemberList extends Component {
         this.setState({
           errorVerifyOTP: err.message,
         });
-        this.props.history.push({
-          pathname: LINK_CARD_LIST,
-          state: {
-            rationCardNo: this.state.rationCardNo,
-          },
-        });
       });
   };
 

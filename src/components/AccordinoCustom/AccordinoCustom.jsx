@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 function AccordinoCustom(props) {
-  const { name, gender, age, adharNo, mobileNumber, relationShip, verified } =
+  const { name, gender, age, adharNo, mobileNumber, relationShip, memberId } =
     props;
   return (
     <div>
@@ -21,12 +21,19 @@ function AccordinoCustom(props) {
             <AccountCircleIcon
               style={{ fontSize: "50px", color: "#00B16A" }}
             />{" "}
-            {props.name}
+            {name}
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           {" "}
           <div className="w-100 d-flex flex-column px-2 border-top">
+            {memberId ? (
+              <div className="w-100 d-flex flex-row justify-content-start mb-2">
+                <div className="w-50 fs-6">Member Id: {memberId ?? "N/A"}</div>
+              </div>
+            ) : (
+              <></>
+            )}
             <div className="w-100 d-flex flex-row justify-content-start mb-2">
               <div className="w-50 fs-6">Gender: {gender ?? "N/A"}</div>
               <div className="w-50 fs-6">Age: {age ?? "N/A"}</div>

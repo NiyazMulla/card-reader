@@ -1,15 +1,10 @@
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import React, { Component } from "react";
-import OtpInput from "react-otp-input";
-import {
-  generateOTP,
-  getMembersDetails,
-  verifyOTP,
-} from "../../api/rationcard";
+import { getMembersDetails } from "../../api/rationcard";
 import AccordinoCustom from "../../components/AccordinoCustom/AccordinoCustom";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom/DialogCustom";
 import PageTitle from "../../components/PageTitle/PageTitle";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 
 class CardDetailList extends Component {
   constructor(props) {
@@ -35,6 +30,7 @@ class CardDetailList extends Component {
           if (res.status) {
             this.setState({
               memberList: res.data,
+              rationCardNo: this.props.location.state?.rationCardNo,
             });
           }
         })
@@ -42,6 +38,20 @@ class CardDetailList extends Component {
           console.log(err);
         });
     }
+  };
+
+  getCardDetails = () => {
+    getMembersDetails(this.state?.rationCardNo)
+      .then((res) => {
+        if (res.status) {
+          this.setState({
+            cardList: res.data,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   renderMembers = () => {
@@ -81,10 +91,34 @@ class CardDetailList extends Component {
           </div>
           <div className="fw-bold fs-5 ">Click here to get card detail</div>
           <div>
-            <ButtonCustom label="Click" color="white" />
+            <ButtonCustom
+              label="Click"
+              color="white"
+              onClick={this.getCardDetails}
+            />
           </div>
         </div>
       );
+    } else {
+      return this.state.cardList.map((member, index) => {
+        return (
+          <div className="w-100 mb-4" key={index}>
+            <AccordinoCustom
+              name={member["MemberName"]}
+              age={parseInt(member["Age"])}
+              gender={member["Gender"].toUpperCase()}
+              handleChangeForVerify={(option) => {
+                this.chooseOptionToVerify(index, option);
+              }}
+              adharNo={member["AadharNumber"]}
+              relationShip={member["RelationWithFamilyHead"]}
+              mobileNumber={member["Mobilenumber"]}
+              memberId={"1234"}
+              // verified
+            />
+          </div>
+        );
+      });
     }
   };
 
@@ -101,7 +135,7 @@ class CardDetailList extends Component {
         >
           <div className="w-100 d-flex flex-column align-items-center justify-content-center"></div>
         </DialogCustom>
-        <PageTitle title={"Members "} />
+        <PageTitle title={"Card Detail "} />
         <div className="w-100 d-flex  ">
           <div className="w-50 d-flex flex-column border-end p-1">
             <div
