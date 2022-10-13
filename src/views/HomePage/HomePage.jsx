@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import SearchBox from "../../components/SearchBox/SearchBox";
-import { getMembersDetails } from "../../api/rationcard";
 import { LINK_MEMBER_LIST } from "../../routes";
 
 class HomePage extends Component {
@@ -20,7 +19,6 @@ class HomePage extends Component {
         rationCardNo: this.state.searchKey,
       },
     });
-    setTimeout(() => {}, 2000);
   };
 
   render() {

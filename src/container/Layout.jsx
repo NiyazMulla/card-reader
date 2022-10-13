@@ -17,6 +17,7 @@ class Layout extends Component {
               {routes.map((route, index) => {
                 return (
                   <Route
+                    key={index}
                     exact={route.exact}
                     path={route.path}
                     component={route.component}

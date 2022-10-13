@@ -19,6 +19,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import React from "react";
 const AGE_MAP = {
   MALE: {
@@ -67,7 +68,7 @@ function MemberCard(props) {
   const id = open ? "simple-popover" : undefined;
   return (
     <div className="border d-flex flex-column border w-full">
-      <div className="d-flex flex-row px-2 justify-content-between align-items-center fs-2 border-bottom border-2 mb-4">
+      <div className="d-flex flex-row px-2 justify-content-between align-items-center fs-3 border-bottom border-2 mb-4">
         <div>
           {Icon ? (
             <Icon style={{ fontSize: "50px", color: "#00B16A" }} />
@@ -126,7 +127,7 @@ function MemberCard(props) {
                   }}
                 >
                   <ListItemIcon>
-                    <FingerprintIcon />
+                    <RemoveRedEyeIcon />
                   </ListItemIcon>
                   <ListItemText primary="IRIS" />
                 </ListItemButton>

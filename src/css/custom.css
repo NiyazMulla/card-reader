@@ -126,3 +126,7 @@ body {
   display: -ms-inline-flexbox;
   display: inline-flex;
 }
+.bg-Primary {
+  background-color: var(--primaryColor);
+  color: white;
+}

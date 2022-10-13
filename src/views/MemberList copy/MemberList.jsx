@@ -6,20 +6,17 @@ import {
   verifyOTP,
 } from "../../api/rationcard";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
-import DialogCustom from "../../components/DialogCustom";
-import MemberCard from "../../components/MemberCard";
-import PageTitle from "../../components/PageTitle";
-import { LINK_CARD_LIST } from "../../routes";
+import DialogCustom from "../../components/DialogCustom/DialogCustom";
+import MemberCard from "../../components/MemberCard/MemberCard";
+import PageTitle from "../../components/PageTitle/PageTitle";
 class MemberList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rationCardNo: "",
       selectedOptionToVerify: "",
       openDialog: false,
       memberList: [],
       isErrorInOTP: false,
-      errorVerifyOTP: false,
       selectedAdharNo: "",
       otp: "",
     };
@@ -36,7 +33,6 @@ class MemberList extends Component {
           if (res.status) {
             this.setState({
               memberList: res.data,
-              rationCardNo: this.props.location.state?.rationCardNo,
             });
           }
         })
@@ -77,26 +73,9 @@ class MemberList extends Component {
     verifyOTP(payload)
       .then((res) => {
         console.log(res);
-        if (res.status === 200) {
-          this.props.history.push({
-            pathname: LINK_CARD_LIST,
-            state: {
-              rationCardNo: this.state.rationCardNo,
-            },
-          });
-        }
       })
       .catch((err) => {
         console.log(err);
-        this.setState({
-          errorVerifyOTP: err.message,
-        });
-        this.props.history.push({
-          pathname: LINK_CARD_LIST,
-          state: {
-            rationCardNo: this.state.rationCardNo,
-          },
-        });
       });
   };
 
@@ -161,14 +140,9 @@ class MemberList extends Component {
             <div className="mt-2">
               <ButtonCustom label={"Verify"} onClick={this.sendOTP} />
             </div>
-            <div style={{ height: "20px", color: "red" }}>
-              {this.state.errorVerifyOTP ? this.state.errorVerifyOTP : ""}
-            </div>
           </div>
         </DialogCustom>
-        <PageTitle
-          title={`Member details Search Result for ${this.state.rationCardNo}`}
-        />
+        <PageTitle title={"Members "} />
         <div className="w-100 d-flex flex-row flex-wrap">
           {this.renderMembers()}
         </div>
