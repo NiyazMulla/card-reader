@@ -158,6 +158,16 @@ class CardDetailList extends Component {
             <div className="w-100 d-flex flex-column justify-content-center align-items-center h-100">
               {this.renderCardList()}
             </div>
+
+            {this.state.cardList.length > 0 ? (
+              <div className="w-100 d-flex flex-row justify-content-center">
+                <div>
+                  <ButtonCustom label="Update Card Detail" />
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
