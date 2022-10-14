@@ -162,7 +162,12 @@ class CardDetailList extends Component {
             {this.state.cardList.length > 0 ? (
               <div className="w-100 d-flex flex-row justify-content-center">
                 <div>
-                  <ButtonCustom label="Update Card Detail" />
+                  <ButtonCustom
+                    label="Update Card Detail"
+                    onClick={() => {
+                      window.alert("Smart Card has been Updated Successfully");
+                    }}
+                  />
                 </div>
               </div>
             ) : (
