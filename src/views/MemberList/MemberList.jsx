@@ -10,6 +10,7 @@ import DialogCustom from "../../components/DialogCustom";
 import MemberCard from "../../components/MemberCard";
 import PageTitle from "../../components/PageTitle";
 import { LINK_CARD_LIST } from "../../routes";
+import CircularProgress from "@mui/material/CircularProgress";
 class MemberList extends Component {
   constructor(props) {
     super(props);
@@ -17,11 +18,15 @@ class MemberList extends Component {
       rationCardNo: "",
       selectedOptionToVerify: "",
       openDialog: false,
+      optData: false,
+      irisData: false,
+      bioMetric: false,
       memberList: [],
       isErrorInOTP: false,
       errorVerifyOTP: false,
       selectedAdharNo: "",
       otp: "",
+      loader: true,
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -35,6 +40,7 @@ class MemberList extends Component {
         .then((res) => {
           if (res.status) {
             this.setState({
+              loader: false,
               memberList: res.data,
               rationCardNo: this.props.location.state?.rationCardNo,
             });
@@ -59,6 +65,9 @@ class MemberList extends Component {
           if (res.status === 200) {
             this.setState({
               openDialog: true,
+              optData: true,
+              irisData: false,
+              bioMetric: false,
               selectedAdharNo: this.state.memberList[index]["AadharNumber"],
             });
           }
@@ -66,6 +75,22 @@ class MemberList extends Component {
         .catch((err) => {
           console.log(err);
         });
+    } else if (selectedOption === "IRIS") {
+      this.setState({
+        openDialog: true,
+        optData: false,
+        irisData: true,
+        bioMetric: false,
+        selectedAdharNo: this.state.memberList[index]["AadharNumber"],
+      });
+    } else if (selectedOption === "BIOMETRIC") {
+      this.setState({
+        openDialog: true,
+        bioMetric: true,
+        irisData: false,
+        optData: false,
+        selectedAdharNo: this.state.memberList[index]["AadharNumber"],
+      });
     }
   }
 
@@ -91,10 +116,23 @@ class MemberList extends Component {
         this.setState({
           errorVerifyOTP: err.message,
         });
+        this.props.history.push({
+          pathname: LINK_CARD_LIST,
+          state: {
+            rationCardNo: this.state.rationCardNo,
+          },
+        });
       });
   };
 
   renderMembers = () => {
+    if (this.state.loader) {
+      return (
+        <div className="w-100 d-flex align-items-center justify-content-center">
+          <CircularProgress />
+        </div>
+      );
+    }
     return this.state.memberList.length > 0 ? (
       this.state.memberList.map((member, index) => {
         return (
@@ -121,6 +159,54 @@ class MemberList extends Component {
     );
   };
 
+  renderDialogContent = () => {
+    if (this.state.optData) {
+      return (
+        <>
+          <p className="fs-4 text-primary">
+            OTP sent to registered mobile number
+          </p>
+          <OtpInput
+            value={this.state.otp}
+            onChange={this.handleChange}
+            numInputs={6}
+            inputStyle={{ width: "30px", height: "40px", outline: "none" }}
+            separator={<span>-</span>}
+          />
+          <p className="fs-6 mt-4 ">
+            Not Received ?{" "}
+            <span
+              className="text-decoration-underline"
+              style={{ cursor: "pointer" }}
+            >
+              Resend OTP
+            </span>
+          </p>
+          <div className="mt-2">
+            <ButtonCustom label={"Verify"} onClick={this.sendOTP} />
+          </div>
+          <div style={{ height: "20px", color: "red" }}>
+            {this.state.errorVerifyOTP ? this.state.errorVerifyOTP : ""}
+          </div>
+        </>
+      );
+    } else if (this.state.irisData) {
+      return (
+        <>
+          <p className="fs-4 text-primary">Scan the image</p>
+          <ButtonCustom label={"Process Scan"} />
+        </>
+      );
+    } else if (this.state.bioMetric) {
+      return (
+        <>
+          <p className="fs-4 text-primary">Read BioMetric</p>
+          <ButtonCustom label={"Process Scan"} />
+        </>
+      );
+    }
+  };
+
   render() {
     return (
       <div className="d-flex flex-column">
@@ -131,33 +217,10 @@ class MemberList extends Component {
               openDialog: false,
             });
           }}
+          headerData={""}
         >
           <div className="w-100 d-flex flex-column align-items-center justify-content-center">
-            <p className="fs-4 text-primary">
-              OTP sent to registered mobile number
-            </p>
-            <OtpInput
-              value={this.state.otp}
-              onChange={this.handleChange}
-              numInputs={6}
-              inputStyle={{ width: "30px", height: "40px", outline: "none" }}
-              separator={<span>-</span>}
-            />
-            <p className="fs-6 mt-4 ">
-              Not Received ?{" "}
-              <span
-                className="text-decoration-underline"
-                style={{ cursor: "pointer" }}
-              >
-                Resend OTP
-              </span>
-            </p>
-            <div className="mt-2">
-              <ButtonCustom label={"Verify"} onClick={this.sendOTP} />
-            </div>
-            <div style={{ height: "20px", color: "red" }}>
-              {this.state.errorVerifyOTP ? this.state.errorVerifyOTP : ""}
-            </div>
+            {this.renderDialogContent()}
           </div>
         </DialogCustom>
         <PageTitle
