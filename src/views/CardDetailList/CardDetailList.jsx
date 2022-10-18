@@ -3,15 +3,15 @@ import React, { Component } from "react";
 import { getMembersDetails } from "../../api/rationcard";
 import AccordinoCustom from "../../components/AccordinoCustom/AccordinoCustom";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
-import DialogCustom from "../../components/DialogCustom/DialogCustom";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import SkeltonCustom from "../../components/SkeltonCustom/SkeltonCustom";
 
 class CardDetailList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       selectedOptionToVerify: "",
-      openDialog: false,
+      loading: true,
       memberList: [],
       isErrorInOTP: false,
       selectedAdharNo: "",
@@ -29,6 +29,7 @@ class CardDetailList extends Component {
         .then((res) => {
           if (res.status) {
             this.setState({
+              loading: false,
               memberList: res.data,
               rationCardNo: this.props.location.state?.rationCardNo,
             });
@@ -36,6 +37,9 @@ class CardDetailList extends Component {
         })
         .catch((err) => {
           console.log(err);
+          this.setState({
+            loading: false,
+          });
         });
     }
   };
@@ -46,15 +50,32 @@ class CardDetailList extends Component {
         if (res.status) {
           this.setState({
             cardList: res.data,
+            loading: false,
           });
         }
       })
       .catch((err) => {
         console.log(err);
+        this.setState({
+          loading: false,
+        });
       });
   };
 
   renderMembers = () => {
+    if (this.state.loading) {
+      return (
+        <div className="w-100 mb-4">
+          <SkeltonCustom variant="rectangular" height={60} />
+          <SkeltonCustom variant="rectangular" height={60} />
+          <SkeltonCustom variant="rectangular" height={60} />
+          <SkeltonCustom variant="rectangular" height={60} />
+          <SkeltonCustom variant="rectangular" height={60} />
+          <SkeltonCustom variant="rectangular" height={60} />
+          <SkeltonCustom variant="rectangular" height={60} />
+        </div>
+      );
+    }
     return this.state.memberList.length > 0 ? (
       this.state.memberList.map((member, index) => {
         return (
@@ -125,16 +146,6 @@ class CardDetailList extends Component {
   render() {
     return (
       <div className="d-flex flex-column">
-        <DialogCustom
-          open={this.state.openDialog}
-          handleClose={() => {
-            this.setState({
-              openDialog: false,
-            });
-          }}
-        >
-          <div className="w-100 d-flex flex-column align-items-center justify-content-center"></div>
-        </DialogCustom>
         <PageTitle title={"Card Detail "} />
         <div className="w-100 d-flex  ">
           <div className="w-50 d-flex flex-column border-end p-1">
@@ -163,7 +174,7 @@ class CardDetailList extends Component {
               <div className="w-100 d-flex flex-row justify-content-center">
                 <div>
                   <ButtonCustom
-                    label="Update Card Detail"
+                    label="Update Smart Card"
                     onClick={() => {
                       window.alert("Smart Card has been Updated Successfully");
                     }}

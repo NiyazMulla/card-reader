@@ -124,6 +124,8 @@ class MemberList extends Component {
         });
       });
   };
+  scanIRis = () => {};
+  scanBioMetric = () => {};
 
   renderMembers = () => {
     if (this.state.loader) {
@@ -158,7 +160,6 @@ class MemberList extends Component {
       <></>
     );
   };
-
   renderDialogContent = () => {
     if (this.state.optData) {
       return (
@@ -206,23 +207,37 @@ class MemberList extends Component {
       );
     }
   };
+  renderDialogHeader = () => {
+    const { optData, irisData, bioMetric } = this.state;
+    if (optData) {
+      return "Verify OTP";
+    } else if (irisData) {
+      return "Verify Member With IRIS";
+    } else if (bioMetric) {
+      return "Verify Member With Biometric";
+    }
+  };
 
   render() {
     return (
       <div className="d-flex flex-column">
-        <DialogCustom
-          open={this.state.openDialog}
-          handleClose={() => {
-            this.setState({
-              openDialog: false,
-            });
-          }}
-          headerData={""}
-        >
-          <div className="w-100 d-flex flex-column align-items-center justify-content-center">
-            {this.renderDialogContent()}
-          </div>
-        </DialogCustom>
+        {this.state.openDialog ? (
+          <DialogCustom
+            open={this.state.openDialog}
+            handleClose={() => {
+              this.setState({
+                openDialog: false,
+              });
+            }}
+            headerData={this.renderDialogHeader()}
+          >
+            <div className="w-100 d-flex flex-column align-items-center justify-content-center">
+              {this.renderDialogContent()}
+            </div>
+          </DialogCustom>
+        ) : (
+          <></>
+        )}
         <PageTitle
           title={`Member details Search Result for ${this.state.rationCardNo}`}
         />
