@@ -35,20 +35,33 @@ class MemberList extends Component {
     this.init();
   }
   init = () => {
-    if (this.props.location.state?.rationCardNo) {
-      getMembersDetails(this.props.location.state?.rationCardNo)
-        .then((res) => {
-          if (res.status) {
+    console.log(this.props.location);
+    if (this.props.location.search) {
+      let searchParam = this.props.location.search.replace("?", "");
+      let paramsArray = searchParam.split("=");
+      if (paramsArray.includes("rationCardNo")) {
+        let index = paramsArray.findIndex((key) => key === "rationCardNo");
+        getMembersDetails(paramsArray[index + 1])
+          .then((res) => {
+            if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
+              this.setState({
+                loader: false,
+                memberList: res.data,
+                rationCardNo: this.props.location.state?.rationCardNo,
+              });
+            } else {
+              this.setState({
+                loader: false,
+              });
+            }
+          })
+          .catch((err) => {
+            console.log(err);
             this.setState({
               loader: false,
-              memberList: res.data,
-              rationCardNo: this.props.location.state?.rationCardNo,
             });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+          });
+      }
     }
   };
 
