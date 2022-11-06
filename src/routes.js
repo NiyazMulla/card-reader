@@ -4,6 +4,8 @@ export const LINK_CUSTOMER_SEARCH = "/";
 export const LINK_MEMBER_LIST = "/members";
 export const LINK_CARD_LIST = "/members/card/detail";
 
+export const LINK_PRINT_CARD = "/print/card";
+
 const HOME = React.lazy(() => import("./views/HomePage"));
 const MEMBER_LIST = React.lazy(() => import("./views/MemberList"));
 const CARD_LIST = React.lazy(() => import("./views/CardDetailList"));
