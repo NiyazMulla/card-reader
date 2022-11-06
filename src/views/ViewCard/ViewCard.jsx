@@ -1,15 +1,15 @@
 import React, { Component } from "react";
 import PageTitle from "../../components/PageTitle/PageTitle";
 
-class PrintCard extends Component {
+class ViewCard extends Component {
   render() {
     return (
       <div>
         {" "}
-        <PageTitle title={`Print Card Detail`} />
+        <PageTitle title={`View Card Detail`} />
       </div>
     );
   }
 }
 
-export default PrintCard;
+export default ViewCard;
