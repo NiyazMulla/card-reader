@@ -15,9 +15,7 @@ class HomePage extends Component {
   onSearch = () => {
     this.props.history.push({
       pathname: LINK_MEMBER_LIST,
-      state: {
-        rationCardNo: this.state.searchKey,
-      },
+      search: `?rationCardNo=${this.state.searchKey}`,
     });
   };
 

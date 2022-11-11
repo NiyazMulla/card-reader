@@ -11,6 +11,7 @@ import MemberCard from "../../components/MemberCard";
 import PageTitle from "../../components/PageTitle";
 import { LINK_CARD_LIST } from "../../routes";
 import CircularProgress from "@mui/material/CircularProgress";
+import ErrorIcon from "@mui/icons-material/Error";
 class MemberList extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +28,7 @@ class MemberList extends Component {
       selectedAdharNo: "",
       otp: "",
       loader: true,
+      errorMessage: "",
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -47,7 +49,7 @@ class MemberList extends Component {
               this.setState({
                 loader: false,
                 memberList: res.data,
-                rationCardNo: this.props.location.state?.rationCardNo,
+                rationCardNo: paramsArray[index + 1],
               });
             } else {
               this.setState({
@@ -62,6 +64,11 @@ class MemberList extends Component {
             });
           });
       }
+    } else {
+      this.setState({
+        loader: false,
+        errorMessage: "Invalid Request, Please contact admin",
+      });
     }
   };
 
@@ -145,6 +152,15 @@ class MemberList extends Component {
       return (
         <div className="w-100 d-flex align-items-center justify-content-center">
           <CircularProgress />
+        </div>
+      );
+    }
+    if (this.state.errorMessage) {
+      return (
+        <div className="w-100 d-flex align-items-center justify-content-center  ">
+          <h3 className="border p-4" style={{ color: "red" }}>
+            <ErrorIcon /> {this.state.errorMessage}
+          </h3>
         </div>
       );
     }
