@@ -10,7 +10,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function DialogCustom(props) {
-  const { open, handleClose, headerData } = props;
+  const { open, handleClose, headerData, hideHeader } = props;
   return (
     <div>
       <Dialog
@@ -22,12 +22,16 @@ export default function DialogCustom(props) {
         maxWidth={"sm"}
         fullWidth={"1"}
       >
-        <DialogTitle className="fw-bold  d-flex justify-content-between">
-          {headerData}
-          <IconButton aria-label="close" onClick={handleClose}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
+        {!hideHeader ? (
+          <DialogTitle className="fw-bold  d-flex justify-content-between">
+            {headerData ?? ""}
+            <IconButton aria-label="close" onClick={handleClose}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+        ) : (
+          <></>
+        )}
         <DialogContent>{props.children}</DialogContent>
       </Dialog>
     </div>

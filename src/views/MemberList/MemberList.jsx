@@ -12,11 +12,14 @@ import PageTitle from "../../components/PageTitle";
 import { LINK_CARD_LIST } from "../../routes";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/Error";
+import queryString from "query-string";
 class MemberList extends Component {
   constructor(props) {
     super(props);
     this.state = {
       rationCardNo: "",
+      requestType: "",
+      requestId: "",
       selectedOptionToVerify: "",
       openDialog: false,
       optData: false,
@@ -37,33 +40,36 @@ class MemberList extends Component {
     this.init();
   }
   init = () => {
-    console.log(this.props.location);
-    if (this.props.location.search) {
-      let searchParam = this.props.location.search.replace("?", "");
-      let paramsArray = searchParam.split("=");
-      if (paramsArray.includes("rationCardNo")) {
-        let index = paramsArray.findIndex((key) => key === "rationCardNo");
-        getMembersDetails(paramsArray[index + 1])
-          .then((res) => {
-            if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
-              this.setState({
+    let parsed = queryString.parse(this.props.location.search);
+    if (parsed.rationCardNo) {
+      getMembersDetails(parsed.rationCardNo)
+        .then((res) => {
+          if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
+            this.setState(
+              {
                 loader: false,
                 memberList: res.data,
-                rationCardNo: paramsArray[index + 1],
-              });
-            } else {
-              this.setState({
-                loader: false,
-              });
-            }
-          })
-          .catch((err) => {
-            console.log(err);
+                rationCardNo: parsed.rationCardNo,
+                requestId: parsed["REQUESTID"],
+                requestType: parsed["REQUESTTYPE"],
+              },
+              () => {
+                sessionStorage.setItem("REQUESTID", this.state.requestId);
+                sessionStorage.setItem("REQUESTTYPE", this.state.requestType);
+              }
+            );
+          } else {
             this.setState({
               loader: false,
             });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          this.setState({
+            loader: false,
           });
-      }
+        });
     } else {
       this.setState({
         loader: false,
@@ -127,6 +133,8 @@ class MemberList extends Component {
             pathname: LINK_CARD_LIST,
             state: {
               rationCardNo: this.state.rationCardNo,
+              REQUESTTYPE: this.state.requestType,
+              REQUESTID: this.state.requestId,
             },
           });
         }

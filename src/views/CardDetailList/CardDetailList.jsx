@@ -1,8 +1,13 @@
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import axios from "axios";
 import React, { Component } from "react";
-import { getMembersDetails } from "../../api/rationcard";
+import {
+  getMembersDetails,
+  redirectToOdishaOneFromUpdateCard,
+} from "../../api/rationcard";
 import AccordinoCustom from "../../components/AccordinoCustom/AccordinoCustom";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
+import DialogCustom from "../../components/DialogCustom/DialogCustom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import SkeltonCustom from "../../components/SkeltonCustom/SkeltonCustom";
 
@@ -32,6 +37,8 @@ class CardDetailList extends Component {
               loading: false,
               memberList: res.data,
               rationCardNo: this.props.location.state?.rationCardNo,
+              requestId: this.props.location.state["REQUESTID"],
+              requestType: this.props.location.state["REQUESTTYPE"],
             });
           }
         })
@@ -143,9 +150,44 @@ class CardDetailList extends Component {
     }
   };
 
+  redirectToOdishaOne = () => {
+    let requestId = sessionStorage.getItem("REQUESTID");
+    let requestType = sessionStorage.getItem("REQUESTTYPE");
+    redirectToOdishaOneFromUpdateCard(requestId)
+      .then((res) => {
+        console.log(res);
+        if (res.data) {
+          let url = `${res.data.ENDPOINT_URL}&encData=${res.data.encData}`;
+          axios
+            .post(url)
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
     return (
       <div className="d-flex flex-column">
+        <>
+          <DialogCustom open={this.state.openDialog} hideHeader>
+            <div className="w-100 d-flex flex-column align-items-center justify-content-center">
+              <p>Smart Card has been Updated Successfully</p>
+              <b>Click Here to Re Direct Odishone</b>
+              <ButtonCustom
+                label={"Click"}
+                onClick={this.redirectToOdishaOne}
+              />
+            </div>
+          </DialogCustom>
+        </>
         <PageTitle title={"Card Detail "} />
         <div className="w-100 d-flex  ">
           <div className="w-50 d-flex flex-column border-end p-1">
@@ -153,7 +195,7 @@ class CardDetailList extends Component {
               className="mb-2 w-100 bg-Primary p-1"
               style={{ height: "32px" }}
             >
-              Ration Card Details from NFSA/SFSA
+              Ration Card Details from NFSA/SFSS
             </div>
             <div className="w-100 d-flex flex-column">
               {this.renderMembers()}
@@ -176,7 +218,9 @@ class CardDetailList extends Component {
                   <ButtonCustom
                     label="Update Smart Card"
                     onClick={() => {
-                      window.alert("Smart Card has been Updated Successfully");
+                      this.setState({
+                        openDialog: true,
+                      });
                     }}
                   />
                 </div>
