@@ -157,9 +157,11 @@ class CardDetailList extends Component {
       .then((res) => {
         console.log(res);
         if (res.data) {
-          let url = `${res.data.ENDPOINT_URL}&encData=${res.data.encData}`;
+          let url = `${res.data.ENDPOINT_URL}`;
+          const formData = new FormData();
+          formData.append("encData", res.data.encData);
           axios
-            .post(url)
+            .post(url, formData)
             .then((res) => {
               console.log(res);
             })
