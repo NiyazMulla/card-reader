@@ -40,7 +40,7 @@ body {
   height: 80px;
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: space-between;
   padding: 10px 8px;
   align-items: center;
   color: white;
@@ -67,10 +67,10 @@ body {
   box-shadow: 3px 11px 19px 2px #cfcfcf;
 }
 .pages-render {
-  grid-column: span 6 / span 6;
+  grid-column: span 7 / span 7;
   overflow: auto;
   text-align: left;
-  margin: 10px 0 0 10px;
+  margin: 10px;
   box-sizing: border-box;
 }
 

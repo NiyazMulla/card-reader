@@ -13,6 +13,7 @@ import { LINK_CARD_LIST } from "../../routes";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/Error";
 import queryString from "query-string";
+import { REQUEST_TYPES } from "../../util/constant";
 class MemberList extends Component {
   constructor(props) {
     super(props);
@@ -25,6 +26,7 @@ class MemberList extends Component {
       optData: false,
       irisData: false,
       bioMetric: false,
+      verifiedOTP: false,
       memberList: [],
       isErrorInOTP: false,
       errorVerifyOTP: false,
@@ -129,14 +131,7 @@ class MemberList extends Component {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          this.props.history.push({
-            pathname: LINK_CARD_LIST,
-            state: {
-              rationCardNo: this.state.rationCardNo,
-              REQUESTTYPE: this.state.requestType,
-              REQUESTID: this.state.requestId,
-            },
-          });
+          this.navigateOrShowMessage();
         }
       })
       .catch((err) => {
@@ -144,16 +139,29 @@ class MemberList extends Component {
         this.setState({
           errorVerifyOTP: err.message,
         });
-        this.props.history.push({
-          pathname: LINK_CARD_LIST,
-          state: {
-            rationCardNo: this.state.rationCardNo,
-          },
-        });
+        this.navigateOrShowMessage();
       });
   };
   scanIRis = () => {};
   scanBioMetric = () => {};
+
+  navigateOrShowMessage = () => {
+    if (this.state.requestType === REQUEST_TYPES.ENROLL) {
+      this.props.history.push({
+        pathname: LINK_CARD_LIST,
+        state: {
+          rationCardNo: this.state.rationCardNo,
+          REQUESTTYPE: this.state.requestType,
+          REQUESTID: this.state.requestId,
+        },
+      });
+    } else if (this.state.requestType === REQUEST_TYPES.PRINT) {
+      this.setState({
+        optData: false,
+        verifiedOTP: true,
+      });
+    }
+  };
 
   renderMembers = () => {
     if (this.state.loader) {
@@ -240,6 +248,25 @@ class MemberList extends Component {
         <>
           <p className="fs-4 text-primary">Read BioMetric</p>
           <ButtonCustom label={"Process Scan"} />
+        </>
+      );
+    } else if (this.state.verifiedOTP) {
+      return (
+        <>
+          <p className="fs-4 text-primary">
+            OTP Verified, Please Print the card
+          </p>
+          <div className="mt-2">
+            <ButtonCustom
+              label={"Print"}
+              onClick={() => {
+                this.setState({
+                  verifyOTP: false,
+                  openDialog: false,
+                });
+              }}
+            />
+          </div>
         </>
       );
     }

@@ -9,9 +9,9 @@ class Layout extends Component {
       <div className="layout-container">
         <Header />
         <div className="section-container">
-          <div className="side-bar">
+          {/* <div className="side-bar">
             <SideBar />
-          </div>
+          </div> */}
           <div className="pages-render">
             <Switch>
               {routes.map((route, index) => {
