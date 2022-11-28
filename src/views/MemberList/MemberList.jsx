@@ -9,7 +9,7 @@ import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
 import MemberCard from "../../components/MemberCard";
 import PageTitle from "../../components/PageTitle";
-import { LINK_CARD_LIST } from "../../routes";
+import { LINK_CARD_LIST, LINK_NEW_CARD } from "../../routes";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/Error";
 import queryString from "query-string";
@@ -146,7 +146,7 @@ class MemberList extends Component {
   scanBioMetric = () => {};
 
   navigateOrShowMessage = () => {
-    if (this.state.requestType === REQUEST_TYPES.ENROLL) {
+    if (this.state.requestType === REQUEST_TYPES.UPDATE) {
       this.props.history.push({
         pathname: LINK_CARD_LIST,
         state: {
@@ -159,6 +159,15 @@ class MemberList extends Component {
       this.setState({
         optData: false,
         verifiedOTP: true,
+      });
+    } else if (this.state.requestType === REQUEST_TYPES.ENROLL) {
+      this.props.history.push({
+        pathname: LINK_NEW_CARD,
+        state: {
+          rationCardNo: this.state.rationCardNo,
+          REQUESTTYPE: this.state.requestType,
+          REQUESTID: this.state.requestId,
+        },
       });
     }
   };
