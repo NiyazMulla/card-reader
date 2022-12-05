@@ -9,7 +9,7 @@ import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
 import MemberCard from "../../components/MemberCard";
 import PageTitle from "../../components/PageTitle";
-import { LINK_CARD_LIST, LINK_NEW_CARD } from "../../routes";
+import { LINK_CARD_LIST, LINK_NEW_CARD, LINK_PRINT_CARD } from "../../routes";
 import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/Error";
 import queryString from "query-string";
@@ -159,6 +159,9 @@ class MemberList extends Component {
       this.setState({
         optData: false,
         verifiedOTP: true,
+      });
+      this.props.history.push({
+        pathname: LINK_PRINT_CARD,
       });
     } else if (this.state.requestType === REQUEST_TYPES.ENROLL) {
       this.props.history.push({

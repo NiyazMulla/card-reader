@@ -23,24 +23,17 @@ class PrintCard extends Component {
       <div>
         {" "}
         <PageTitle title={`Print Card Detail`} />
-        <div className="w-100 d-flex flex-row flex-wrap justify-content-end px-4 mb-2">
-          <Button variant="contained" className="mx-2">
-            Approve
-          </Button>
-          <Button variant="outlined" color="error">
-            Reject
-          </Button>
-        </div>
         <div className="w-100 d-flex flex-row flex-wrap">
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
               <TableHead className="bg-Primary text-white">
                 <TableRow>
-                  <TableCell>Select All</TableCell>
-                  <TableCell>Remarks</TableCell>
                   <TableCell>Ration Card Number</TableCell>
-                  <TableCell>Add Date Time</TableCell>
-                  <TableCell>Support Function</TableCell>
+                  <TableCell>Application Id</TableCell>
+                  <TableCell>Application Date</TableCell>
+                  <TableCell>MSK USER ID</TableCell>
+                  <TableCell>District ID</TableCell>
+                  <TableCell>Status</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -49,19 +42,68 @@ class PrintCard extends Component {
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    <Checkbox />
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    Remarks if any
-                  </TableCell>
-                  <TableCell component="th" scope="row">
                     040111001270
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    AP0123
                   </TableCell>
                   <TableCell component="th" scope="row">
                     08 Nov 2022
                   </TableCell>
                   <TableCell component="th" scope="row">
-                    New card print
+                    USER 001
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    098
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    PRINT
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  // key={}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    040111001270
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    AP0123
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    08 Nov 2022
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    USER 001
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    098
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    PRINT
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  // key={}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    040111001270
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    AP0123
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    08 Nov 2022
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    USER 001
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    098
+                  </TableCell>
+                  <TableCell component="th" scope="row">
+                    PRINT
                   </TableCell>
                 </TableRow>
               </TableBody>
