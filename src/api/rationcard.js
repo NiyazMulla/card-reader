@@ -1,14 +1,14 @@
 import axios from "axios";
-import { getBaseURL } from "./config";
+import { getBaseURL, getHeaders } from "./config";
 
 export const getMembersDetails = (rationCardNo) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/getNFSData/${rationCardNo}`;
-  return axios.post(url);
+  return axios.post(url,{},);
 };
 
 export const generateOTP = (adharNo) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/generateOTP/${adharNo}`;
-  return axios.post(url);
+  return axios.post(url,{});
 };
 
 export const verifyOTP = (payload) => {
@@ -17,19 +17,19 @@ export const verifyOTP = (payload) => {
 };
 export const redirectToOdishaOneFromUpdateCard = (requestId) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/odhishaOneResapi/getResponseParam/${requestId}/UPDATE`;
-  return axios.post(url);
+  return axios.post(url,{});
 };
 
 export const redirectToOdishaOneFromPrint = (requestId) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/odhishaOneResapi/getResponseParam/${requestId}/PRINT`;
-  return axios.post(url);
+  return axios.post(url,{});
 };
 
 export const redirectToOdishaOneFromDelivery = (requestId) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/odhishaOneResapi/getResponseParam/${requestId}/PRINT`;
-  return axios.post(url);
+  return axios.post(url,{});
 };
 export const redirectToOdishaOneFromCancel = (requestId) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/odhishaOneResapi/getResponseParam/${requestId}/CANCEL`;
-  return axios.post(url);
+  return axios.post(url,{},getHeaders());
 };
