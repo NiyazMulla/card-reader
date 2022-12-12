@@ -5,7 +5,7 @@ export const getBaseURL = () => {
 export const getHeaders = () => {
   return {
     headers: {
-      "content-type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/x-www-form-urlencoded",
     },
   };
 }
