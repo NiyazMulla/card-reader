@@ -3,6 +3,7 @@ import AppLogo from "../assets/img/logo.jpg";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { redirectToOdishaOneFromCancel } from "../api/rationcard";
 import axios from "axios";
+import { getHeaders } from "../api/config";
 function Header(props) {
   const onCancel = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
@@ -16,7 +17,7 @@ function Header(props) {
             const formData = new FormData();
             formData.append("encData", res.data.encData);
             axios
-              .post(url, formData)
+              .post(url, formData, getHeaders())
               .then((res) => {
                 console.log(res);
               })
