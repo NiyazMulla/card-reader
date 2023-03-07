@@ -1,5 +1,5 @@
 export const getBaseURL = () => {
-  return "http://101.53.135.32:8080";
+  return "http://20.204.139.151";
 };
 
 export const getHeaders = () => {
