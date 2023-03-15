@@ -1,5 +1,5 @@
 export const getBaseURL = () => {
-  return "http://20.204.139.151";
+  return window.env.REACT_APP_BASE_API_URL;
 };
 
 export const getHeaders = () => {
@@ -8,4 +8,4 @@ export const getHeaders = () => {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   };
-}
+};
