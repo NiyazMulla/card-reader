@@ -10,7 +10,12 @@ export const generateOTP = (adharNo) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/generateOTP/${adharNo}`;
   return axios.post(url,{});
 };
-
+export const getMembersDetailsFromSmartCard = (rationCardNo) => {
+  let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/readSmartCard`;
+  return axios.post(url,{
+    rationCardNum:rationCardNo
+  },);
+};
 export const verifyOTP = (payload) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/verifyOTP`;
   return axios.post(url, payload);

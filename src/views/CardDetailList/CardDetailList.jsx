@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { Component } from "react";
 import {
   getMembersDetails,
+  getMembersDetailsFromSmartCard,
   redirectToOdishaOneFromUpdateCard,
 } from "../../api/rationcard";
 import AccordinoCustom from "../../components/AccordinoCustom/AccordinoCustom";
@@ -52,7 +53,7 @@ class CardDetailList extends Component {
   };
 
   getCardDetails = () => {
-    getMembersDetails(this.state?.rationCardNo)
+    getMembersDetailsFromSmartCard(this.state?.rationCardNo)
       .then((res) => {
         if (res.status) {
           this.setState({
