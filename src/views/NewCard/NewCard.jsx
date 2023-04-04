@@ -2,6 +2,7 @@ import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import axios from "axios";
 import React, { Component } from "react";
 import {
+  enrollCardDetail,
   getMembersDetails,
   redirectToOdishaOneFromUpdateCard,
 } from "../../api/rationcard";
@@ -26,6 +27,7 @@ class NewCard extends Component {
         loader: false,
         success: false,
       },
+      cardDetail: {},
     };
   }
 
@@ -63,8 +65,20 @@ class NewCard extends Component {
         loader: true,
       },
     });
-
-    setTimeout(() => {
+    let payload = {
+      rationCardNum: this.state.rationCardNo,
+    }
+    enrollCardDetail(payload).then(res => {
+      this.setState({
+        newCard: {
+          ...this.state.newCard,
+          loader: false,
+          success: true,
+        },
+        cardDetail: res.data
+      });
+    }).catch(err => {
+      console.log(err);
       this.setState({
         newCard: {
           ...this.state.newCard,
@@ -72,7 +86,9 @@ class NewCard extends Component {
           success: true,
         },
       });
-    }, 2000);
+    })
+
+    
   };
 
   renderMembers = () => {
@@ -116,8 +132,8 @@ class NewCard extends Component {
   };
 
   renderNewCard = () => {
-    const { newCard } = this.state;
-    console.log(newCard);
+    const { newCard, cardDetail } = this.state;
+    let keys = Object.keys(cardDetail);
     if (newCard.initial) {
       return (
         <div className="w-75 d-flex flex-column border justify-content-center align-items-center rounded-pill p-4 bg-Primary">
@@ -143,28 +159,17 @@ class NewCard extends Component {
       );
     } else if (newCard.success) {
       return (
-        <div className="w-75 d-flex flex-column border justify-content-start align-items-start p-4 bg-Primary">
-          <div className="d-flex flex-row justify-content-between w-100">
-            <div className="">Ration Card No: </div>
-            <div>{this.state.rationCardNo}</div>
-          </div>
-          <div className="d-flex flex-row justify-content-between w-100">
-            <div className="">Application ID:</div>
-            <div className="">{Math.random()}</div>
-          </div>
-          <div className="d-flex flex-row justify-content-between w-100">
-            <div className="">Application Date:</div>
-            <div className="">{new Date().toLocaleDateString()}</div>
-          </div>
-          <div className="d-flex flex-row justify-content-between w-100">
-            <div className="">MSK:</div>
-          </div>
-          <div className="d-flex flex-row justify-content-between w-100">
-            <div className="">User Id:</div>
-          </div>
-          <div className="d-flex flex-row justify-content-between w-100">
-            <div className="">District:</div>
-          </div>
+        <div className="w-75 d-flex flex-column border justify-content-start align-items-start p-4 bg-Primary">         
+         {
+          keys.map((key) => {
+            return(
+              <div className="d-flex flex-row justify-content-between w-100">
+                <div className="">{key}: </div>
+                <div>{cardDetail[key]}</div>
+              </div>
+            )
+          })
+         }
         </div>
       );
     }

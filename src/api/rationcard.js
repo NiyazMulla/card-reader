@@ -38,3 +38,8 @@ export const redirectToOdishaOneFromCancel = (requestId) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/odhishaOneResapi/getResponseParam/${requestId}/CANCEL`;
   return axios.post(url,{},getHeaders());
 };
+
+export const enrollCardDetail = (payload) => {
+  let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/enrollSmartCard`;
+  return axios.post(url,payload,getHeaders());
+};
