@@ -142,7 +142,7 @@ class CardDetailList extends Component {
               adharNo={member["AadharNumber"]}
               relationShip={member["RelationWithFamilyHead"]}
               mobileNumber={member["Mobilenumber"]}
-              memberId={"1234"}
+              memberId={member['MEMBERID']}
               // verified
             />
           </div>
