@@ -43,3 +43,8 @@ export const enrollCardDetail = (payload) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/enrollSmartCard`;
   return axios.post(url,payload,getHeaders());
 };
+
+export const printCardDetail = (payload) => {
+  let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/printCardDetail`;
+  return axios.post(url,payload,getHeaders());
+}

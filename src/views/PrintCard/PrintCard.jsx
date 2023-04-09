@@ -1,114 +1,151 @@
-import React, { Component } from "react";
-import PageTitle from "../../components/PageTitle/PageTitle";
+import ErrorIcon from "@mui/icons-material/Error";
+import CircularProgress from "@mui/material/CircularProgress";
+import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import Checkbox from "@mui/material/Checkbox";
-import Button from "@mui/material/Button";
+import queryString from "query-string";
+import React, { Component } from "react";
+import { printCardDetail } from "../../api/rationcard";
+import PageTitle from "../../components/PageTitle/PageTitle";
 class PrintCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      loader: true,
       rows: [],
-      columns: [],
+      columns: [
+        {
+          label: 'Ration Card Number'
+        },
+        {
+          label: 'Application Id'
+        },
+        {
+          label: 'Application Date'
+        },
+        {
+          label: 'MSK USER ID'
+        },
+        {
+          label: 'District ID'
+        },
+        {
+          label: 'Status'
+        }
+      ],
+      errorMessage: ''
     };
+  }
+
+  componentDidMount() {
+    this.getCardDetail();
+  }
+
+  getCardDetail = () => {
+    let parsed = queryString.parse(this.props.location.search);
+    if (parsed.rationCardNo) {
+      // 
+      let payload = {
+        rationCardNum: parsed.rationCardNo
+      }
+      printCardDetail(payload).then(res => {
+        console.log(res);
+        this.setState({
+          loader: false,
+          rows: res.data
+        })
+      }).catch(err => {
+        console.log(err);
+      })
+
+    } else {
+      this.setState({
+        loader: false,
+        errorMessage: "Invalid Request, Please contact admin",
+      });
+    }
+  }
+
+
+  renderMembers = () => {
+    if (this.state.loader) {
+      return (
+        <div className="w-100 d-flex align-items-center justify-content-center">
+          <CircularProgress />
+        </div>
+      );
+    }
+    if (this.state.errorMessage) {
+      return (
+        <div className="w-100 d-flex align-items-center justify-content-center  ">
+          <h3 className="border p-4" style={{ color: "red" }}>
+            <ErrorIcon /> {this.state.errorMessage}
+          </h3>
+        </div>
+      );
+    }
+    return this.renderTable()
+  };
+
+  renderTable = () => {
+    const { columns } = this.state;
+    return (
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead className="bg-Primary text-white">
+            <TableRow>
+              {columns.map((column => {
+                return (
+                  <TableCell key={column.label}>{column.label}</TableCell>
+                )
+              }))}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {
+              this.state.rows.map((row, index) => {
+                return (
+                  <TableRow
+                    key={row.RationCardNo}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.RationCardNo}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.ApplicationID}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.ApplicationDate}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.MSK}
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {row.District}
+                    </TableCell>
+                  </TableRow>
+                )
+              })
+            }
+
+          </TableBody>
+        </Table>
+      </TableContainer>
+    )
   }
 
   render() {
     return (
       <div>
-        {" "}
+
         <PageTitle title={`Print Card Detail`} />
         <div className="w-100 d-flex flex-row flex-wrap">
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead className="bg-Primary text-white">
-                <TableRow>
-                  <TableCell>Ration Card Number</TableCell>
-                  <TableCell>Application Id</TableCell>
-                  <TableCell>Application Date</TableCell>
-                  <TableCell>MSK USER ID</TableCell>
-                  <TableCell>District ID</TableCell>
-                  <TableCell>Status</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                <TableRow
-                  // key={}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    040111001270
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    AP0123
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    08 Nov 2022
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    USER 001
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    098
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    PRINT
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  // key={}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    040111001270
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    AP0123
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    08 Nov 2022
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    USER 001
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    098
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    PRINT
-                  </TableCell>
-                </TableRow>
-                <TableRow
-                  // key={}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    040111001270
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    AP0123
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    08 Nov 2022
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    USER 001
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    098
-                  </TableCell>
-                  <TableCell component="th" scope="row">
-                    PRINT
-                  </TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {this.renderMembers()}
         </div>
       </div>
     );
