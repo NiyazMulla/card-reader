@@ -46,9 +46,8 @@ class PrintCard extends Component {
   }
 
   getCardDetail = () => {
-    let parsed = queryString.parse(this.props.location.search);
-    if (parsed.rationCardNo) {
-      // 
+  
+    if (this.props.location.state?.rationCardNo) {
       let payload = {
         rationCardNum: parsed.rationCardNo
       }
