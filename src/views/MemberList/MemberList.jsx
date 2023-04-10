@@ -162,6 +162,7 @@ class MemberList extends Component {
       });
       this.props.history.push({
         pathname: LINK_PRINT_CARD,
+        search: this.state.rationCardNo,
       });
     } else if (this.state.requestType === REQUEST_TYPES.ENROLL) {
       this.props.history.push({
