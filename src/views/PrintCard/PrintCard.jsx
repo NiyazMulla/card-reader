@@ -9,14 +9,17 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import queryString from "query-string";
 import React, { Component } from "react";
-import { printCardDetail } from "../../api/rationcard";
+import { printCardDetail, printSmartCard } from "../../api/rationcard";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
+import DialogCustom from "../../components/DialogCustom/DialogCustom";
 class PrintCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loader: true,
       rows: [],
+      openDialog: false,
       columns: [
         {
           label: 'Ration Card Number'
@@ -46,7 +49,7 @@ class PrintCard extends Component {
   }
 
   getCardDetail = () => {
-  
+
     if (this.props.location.state?.rationCardNo) {
       let payload = {
         rationCardNum: this.props.location.state?.rationCardNo
@@ -67,6 +70,21 @@ class PrintCard extends Component {
         errorMessage: "Invalid Request, Please contact admin",
       });
     }
+  }
+
+  onPrintClick = () => {
+    let payload = {
+      rationCardNum: this.props.location.state?.rationCardNo
+    }
+    printSmartCard(payload).then(res => {
+      console.log(res);
+      this.setState({
+        openDialog: true,
+      })
+
+    }).catch(err => {
+      console.log(err);
+    })
   }
 
 
@@ -127,6 +145,9 @@ class PrintCard extends Component {
                     <TableCell component="th" scope="row">
                       {row.District}
                     </TableCell>
+                    <TableCell component="th" scope="row">
+                      <ButtonCustom onClick={this.onPrintClick} />
+                    </TableCell>
                   </TableRow>
                 )
               })
@@ -141,7 +162,22 @@ class PrintCard extends Component {
   render() {
     return (
       <div>
-
+        <>
+          <DialogCustom open={this.state.openDialog} hideHeader>
+            <div className="w-100 d-flex flex-column align-items-center justify-content-center">
+              <p>Smart Card has been printed Successfully</p>
+              {/* <b>Click Here to Re Direct Odishone</b> */}
+              <ButtonCustom
+                label={"Click"}
+                onClick={() => {
+                  this.setState({
+                    openDialog: true,
+                  })
+                }}
+              />
+            </div>
+          </DialogCustom>
+        </>
         <PageTitle title={`Print Card Detail`} />
         <div className="w-100 d-flex flex-row flex-wrap">
           {this.renderMembers()}
