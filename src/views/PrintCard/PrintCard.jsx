@@ -49,7 +49,7 @@ class PrintCard extends Component {
   
     if (this.props.location.state?.rationCardNo) {
       let payload = {
-        rationCardNum: parsed.rationCardNo
+        rationCardNum: this.props.location.state?.rationCardNo
       }
       printCardDetail(payload).then(res => {
         console.log(res);
