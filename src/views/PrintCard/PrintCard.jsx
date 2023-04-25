@@ -37,7 +37,7 @@ class PrintCard extends Component {
           label: 'District ID'
         },
         {
-          label: 'Status'
+          label: 'Action'
         }
       ],
       errorMessage: ''
@@ -117,7 +117,9 @@ class PrintCard extends Component {
             <TableRow>
               {columns.map((column => {
                 return (
-                  <TableCell key={column.label}>{column.label}</TableCell>
+                  <TableCell key={column.label}>
+                    <b>{column.label}</b>
+                  </TableCell>
                 )
               }))}
             </TableRow>
@@ -146,7 +148,7 @@ class PrintCard extends Component {
                       {row.District}
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <ButtonCustom onClick={this.onPrintClick} />
+                      <ButtonCustom onClick={this.onPrintClick} label='Prints' />
                     </TableCell>
                   </TableRow>
                 )
