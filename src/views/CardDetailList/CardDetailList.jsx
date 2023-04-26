@@ -5,6 +5,7 @@ import {
   getMembersDetails,
   getMembersDetailsFromSmartCard,
   redirectToOdishaOneFromUpdateCard,
+  updateSmartCard,
 } from "../../api/rationcard";
 import AccordinoCustom from "../../components/AccordinoCustom/AccordinoCustom";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
@@ -151,6 +152,17 @@ class CardDetailList extends Component {
     }
   };
 
+  onUpdate = () => {
+    updateSmartCard().then(res => {
+      console.log(res);
+      this.setState({
+        openDialog: true,
+      });
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
   redirectToOdishaOne = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
     let requestType = sessionStorage.getItem("REQUESTTYPE");
@@ -221,9 +233,7 @@ class CardDetailList extends Component {
                   <ButtonCustom
                     label="Update Smart Card"
                     onClick={() => {
-                      this.setState({
-                        openDialog: true,
-                      });
+                      
                     }}
                   />
                 </div>
