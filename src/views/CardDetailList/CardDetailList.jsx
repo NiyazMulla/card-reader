@@ -232,9 +232,7 @@ class CardDetailList extends Component {
                 <div>
                   <ButtonCustom
                     label="Update Smart Card"
-                    onClick={() => {
-                      
-                    }}
+                    onClick={this.onUpdate}
                   />
                 </div>
               </div>
