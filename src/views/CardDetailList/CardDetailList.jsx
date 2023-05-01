@@ -153,7 +153,10 @@ class CardDetailList extends Component {
   };
 
   onUpdate = () => {
-    updateSmartCard().then(res => {
+    let payload = {
+      rationCardNum: this.props.location.state?.rationCardNo
+    }
+    updateSmartCard(payload).then(res => {
       console.log(res);
       this.setState({
         openDialog: true,
