@@ -59,3 +59,8 @@ export const updateSmartCard = (payload) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/updateSmartCard`;
   return axios.post(url,payload,getHeaders());
 }
+
+export const getStatus = (payload) => {
+  let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/checkDeliveryStatus`;
+  return axios.post(url,payload,getHeaders());
+}

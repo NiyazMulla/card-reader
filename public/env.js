@@ -1,3 +1,3 @@
 window.env = {
-  REACT_APP_BASE_API_URL: "http://20.204.139.151",
+  REACT_APP_BASE_API_URL: "http://sumand-54172.portmap.host:54172",
 };

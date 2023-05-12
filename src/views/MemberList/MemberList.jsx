@@ -3,6 +3,7 @@ import OtpInput from "react-otp-input";
 import {
   generateOTP,
   getMembersDetails,
+  getStatus,
   verifyOTP,
 } from "../../api/rationcard";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
@@ -14,6 +15,8 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ErrorIcon from "@mui/icons-material/Error";
 import queryString from "query-string";
 import { REQUEST_TYPES } from "../../util/constant";
+import ErrorCard from "../../components/ErrorCard/ErrorCard";
+import { parseAPIErrorMessage } from "../../util/helper";
 class MemberList extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +25,7 @@ class MemberList extends Component {
       requestType: "",
       requestId: "",
       selectedOptionToVerify: "",
+      dialogLoader: true,
       openDialog: false,
       optData: false,
       irisData: false,
@@ -34,6 +38,12 @@ class MemberList extends Component {
       otp: "",
       loader: true,
       errorMessage: "",
+      showError: false,
+      errorObj: {
+        heading: '',
+        subHeading: '',
+        message: '',
+      }
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -44,34 +54,8 @@ class MemberList extends Component {
   init = () => {
     let parsed = queryString.parse(this.props.location.search);
     if (parsed.rationCardNo) {
-      getMembersDetails(parsed.rationCardNo)
-        .then((res) => {
-          if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
-            this.setState(
-              {
-                loader: false,
-                memberList: res.data,
-                rationCardNo: parsed.rationCardNo,
-                requestId: parsed["REQUESTID"],
-                requestType: parsed["REQUESTTYPE"],
-              },
-              () => {
-                sessionStorage.setItem("REQUESTID", this.state.requestId);
-                sessionStorage.setItem("REQUESTTYPE", this.state.requestType);
-              }
-            );
-          } else {
-            this.setState({
-              loader: false,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          this.setState({
-            loader: false,
-          });
-        });
+      this.getMemberList(parsed)
+      this.getCardStatus(parsed.rationCardNo)  
     } else {
       this.setState({
         loader: false,
@@ -80,12 +64,62 @@ class MemberList extends Component {
     }
   };
 
+
+  getMemberList = (queryParam) => {
+    getMembersDetails(queryParam.rationCardNo)
+    .then((res) => {
+      if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
+        this.setState(
+          {
+            loader: false,
+            memberList: res.data,
+            rationCardNo: queryParam.rationCardNo,
+            requestId: queryParam["REQUESTID"],
+            requestType: queryParam["REQUESTTYPE"],
+          },
+          () => {
+            sessionStorage.setItem("REQUESTID", this.state.requestId);
+            sessionStorage.setItem("REQUESTTYPE", this.state.requestType);
+          }
+        );
+      } else {
+        this.setState({
+          loader: false,
+        });
+      }
+    })
+    .catch((err) => {
+      
+      let errorObj = parseAPIErrorMessage(err)
+      this.setState({
+        loader: false,
+        errorObj,
+        showError: true,
+      });
+    });
+  }
+  getCardStatus = (rationCardNo) => {
+    let payload = {
+      "rationCardNum":rationCardNo
+    }
+    getStatus(payload).then(res => {
+      console.log(res);
+    }).catch(err => {
+      console.log(err);
+    })
+  }
+
+
+
   handleChange = (otp) => {
     this.setState({
       otp: otp,
     });
   };
   chooseOptionToVerify(index, selectedOption) {
+    this.setState({
+      openDialog: true,
+    });
     if (selectedOption === "OTP") {
       generateOTP(this.state.memberList[index]["AadharNumber"])
         .then((res) => {
@@ -96,6 +130,7 @@ class MemberList extends Component {
               optData: true,
               irisData: false,
               bioMetric: false,
+              dialogLoader: false,
               selectedAdharNo: this.state.memberList[index]["AadharNumber"],
             });
           }
@@ -109,6 +144,7 @@ class MemberList extends Component {
         optData: false,
         irisData: true,
         bioMetric: false,
+        dialogLoader: false,
         selectedAdharNo: this.state.memberList[index]["AadharNumber"],
       });
     } else if (selectedOption === "BIOMETRIC") {
@@ -117,6 +153,7 @@ class MemberList extends Component {
         bioMetric: true,
         irisData: false,
         optData: false,
+        dialogLoader: false,
         selectedAdharNo: this.state.memberList[index]["AadharNumber"],
       });
     }
@@ -131,15 +168,23 @@ class MemberList extends Component {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          this.navigateOrShowMessage();
+          this.setState({
+            openDialog: false,
+          },() => {
+            this.navigateOrShowMessage();
+          })
+          
         }
       })
       .catch((err) => {
         console.log(err);
         this.setState({
           errorVerifyOTP: err.message,
+          openDialog: false,
+        },()=> {
+          this.navigateOrShowMessage();
         });
-        this.navigateOrShowMessage();
+        
       });
   };
   scanIRis = () => {};
@@ -195,6 +240,14 @@ class MemberList extends Component {
         </div>
       );
     }
+
+    if(this.state.showError){
+      const { heading, subHeading, message } = this.state.errorObj;
+      return (
+         <ErrorCard heading={heading} subHeading={subHeading} message={message} />
+      )
+    }
+
     return this.state.memberList.length > 0 ? (
       this.state.memberList.map((member, index) => {
         return (
@@ -221,6 +274,11 @@ class MemberList extends Component {
     );
   };
   renderDialogContent = () => {
+
+    if(this.state.dialogLoader){
+      return <>Loading...</>
+    }
+
     if (this.state.optData) {
       return (
         <>
