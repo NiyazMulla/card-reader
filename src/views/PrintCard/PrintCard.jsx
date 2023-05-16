@@ -1,4 +1,3 @@
-import ErrorIcon from "@mui/icons-material/Error";
 import CircularProgress from "@mui/material/CircularProgress";
 import Paper from "@mui/material/Paper";
 import Table from "@mui/material/Table";
@@ -11,6 +10,7 @@ import React, { Component } from "react";
 import { printCardDetail, printSmartCard } from "../../api/rationcard";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom/DialogCustom";
+import ErrorCard from "../../components/ErrorCard/ErrorCard";
 import PageTitle from "../../components/PageTitle/PageTitle";
 class PrintCard extends Component {
   constructor(props) {
@@ -18,6 +18,7 @@ class PrintCard extends Component {
     this.state = {
       loader: true,
       rows: [],
+      tableErrorMessage: '',
       openDialog: false,
       columns: [
         {
@@ -39,7 +40,8 @@ class PrintCard extends Component {
           label: 'Action'
         }
       ],
-      errorMessage: ''
+      errorMessage: '',
+      errorMessageInPrint: '',
     };
   }
 
@@ -61,6 +63,10 @@ class PrintCard extends Component {
         })
       }).catch(err => {
         console.log(err);
+        this.setState({
+          tableErrorMessage: err.message,
+          loader: false,
+        })
       })
 
     } else {
@@ -83,6 +89,9 @@ class PrintCard extends Component {
 
     }).catch(err => {
       console.log(err);
+      this.setState({
+
+      })
     })
   }
 
@@ -95,20 +104,20 @@ class PrintCard extends Component {
         </div>
       );
     }
-    if (this.state.errorMessage) {
-      return (
-        <div className="w-100 d-flex align-items-center justify-content-center  ">
-          <h3 className="border p-4" style={{ color: "red" }}>
-            <ErrorIcon /> {this.state.errorMessage}
-          </h3>
-        </div>
-      );
-    }
     return this.renderTable()
   };
 
   renderTable = () => {
-    const { columns } = this.state;
+    const { columns,tableErrorMessage } = this.state;
+    if(tableErrorMessage){
+      return (
+        <div className="w-100 d-flex justify-content-center align-items-center">
+          <div className="w-50">
+            <ErrorCard heading={tableErrorMessage}  />
+          </div>
+        </div>
+      )
+    }
     return (
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -161,21 +170,39 @@ class PrintCard extends Component {
   }
 
   render() {
+    const { errorMessage } = this.state;
+    if(errorMessage){
+      return (
+        <div className="w-100 d-flex justify-content-center align-items-center">
+          <div className="w-50">
+            <ErrorCard heading={errorMessage}  />
+          </div>
+        </div>
+      )
+    }
     return (
       <div>
         <>
           <DialogCustom open={this.state.openDialog} hideHeader>
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
-              <p>Smart Card has been printed Successfully</p>
-              {/* <b>Click Here to Re Direct Odishone</b> */}
-              <ButtonCustom
-                label={"Click"}
-                onClick={() => {
-                  this.setState({
-                    openDialog: true,
-                  })
-                }}
-              />
+              {
+                this.state.errorMessageInPrint ?  
+                  <div className="w-100 d-flex justify-content-center align-items-center">
+                    <div className="w-50">
+                      <ErrorCard heading={this.state.errorMessageInPrint}  />
+                    </div>
+                  </div> 
+              : <> <p>Smart Card has been printed Successfully</p>
+                <ButtonCustom
+                  label={"Click"}
+                  onClick={() => {
+                    this.setState({
+                      openDialog: false,
+                    })
+                  }}
+                /></>
+              }
+             
             </div>
           </DialogCustom>
         </>
