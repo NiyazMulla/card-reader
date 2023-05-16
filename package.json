@@ -25,7 +25,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy-uat": "npm run build && pm2 start ecosystem.config.js"
   },
   "eslintConfig": {
     "extends": [
