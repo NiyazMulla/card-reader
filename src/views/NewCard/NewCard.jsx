@@ -12,13 +12,16 @@ import DialogCustom from "../../components/DialogCustom/DialogCustom";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import SkeltonCustom from "../../components/SkeltonCustom/SkeltonCustom";
 import CircularProgress from "@mui/material/CircularProgress";
+import ErrorCard from "../../components/ErrorCard/ErrorCard";
 class NewCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      errorMessage: "",
       selectedOptionToVerify: "",
       loading: true,
       memberList: [],
+      memberListErrorMessage: '',
       isErrorInOTP: false,
       selectedAdharNo: "",
       otp: "",
@@ -28,6 +31,7 @@ class NewCard extends Component {
         success: false,
       },
       cardDetail: {},
+      newCardErrorMessage: '',
     };
   }
 
@@ -52,8 +56,14 @@ class NewCard extends Component {
           console.log(err);
           this.setState({
             loading: false,
+            memberListErrorMessage: err.message
           });
         });
+    }else {
+      this.setState({
+        loading: false,
+        errorMessage: "Invalid Request, Please contact admin",
+      })
     }
   };
 
@@ -64,34 +74,35 @@ class NewCard extends Component {
         initial: false,
         loader: true,
       },
+    },() => {
+      let payload = {
+        rationCardNum: this.state.rationCardNo,
+      }
+      enrollCardDetail(payload).then(res => {
+        this.setState({
+          newCard: {
+            ...this.state.newCard,
+            loader: false,
+            success: true,
+          },
+          cardDetail: res.data
+        });
+      }).catch(err => {
+        console.log(err);
+        this.setState({
+          newCardErrorMessage: err.message,
+          newCard: {
+            ...this.state.newCard,
+            loader: false,
+            success: true,
+          },
+        });
+      })
     });
-    let payload = {
-      rationCardNum: this.state.rationCardNo,
-    }
-    enrollCardDetail(payload).then(res => {
-      this.setState({
-        newCard: {
-          ...this.state.newCard,
-          loader: false,
-          success: true,
-        },
-        cardDetail: res.data
-      });
-    }).catch(err => {
-      console.log(err);
-      this.setState({
-        newCard: {
-          ...this.state.newCard,
-          loader: false,
-          success: true,
-        },
-      });
-    })
-
-    
   };
 
   renderMembers = () => {
+    const { memberListErrorMessage }  = this.state;
     if (this.state.loading) {
       return (
         <div className="w-100 mb-4">
@@ -104,6 +115,15 @@ class NewCard extends Component {
           <SkeltonCustom variant="rectangular" height={60} />
         </div>
       );
+    }
+    if(memberListErrorMessage){
+      return (
+        <div className="w-100 d-flex justify-content-center align-items-center">
+          <div className="w-50">
+            <ErrorCard heading={memberListErrorMessage}  />
+          </div>
+        </div>
+      )
     }
     return this.state.memberList.length > 0 ? (
       this.state.memberList.map((member, index) => {
@@ -125,15 +145,29 @@ class NewCard extends Component {
         );
       })
     ) : this.state.memberList.length === 0 ? (
-      <>No Members Found</>
+      <div className="w-100 d-flex justify-content-center align-items-center">
+        <div className="w-50"> 
+          <p style={{fontSize:'32px',color: '#E5F8FF'}}> No Members Found </p>
+        </div>
+      </div>
     ) : (
       <></>
     );
   };
 
   renderNewCard = () => {
-    const { newCard, cardDetail } = this.state;
+    const { newCard, cardDetail, newCardErrorMessage } = this.state;
     let keys = Object.keys(cardDetail);
+
+    if(newCardErrorMessage){
+      return (
+        <div className="w-100 d-flex justify-content-center align-items-center">
+          <div className="w-50">
+            <ErrorCard heading={newCardErrorMessage}  />
+          </div>
+        </div>
+      )
+    }
     if (newCard.initial) {
       return (
         <div className="w-75 d-flex flex-column border justify-content-center align-items-center rounded-pill p-4 bg-Primary">
@@ -177,7 +211,7 @@ class NewCard extends Component {
 
   redirectToOdishaOne = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
-    let requestType = sessionStorage.getItem("REQUESTTYPE");
+   
     redirectToOdishaOneFromUpdateCard(requestId)
       .then((res) => {
         console.log(res);
@@ -201,6 +235,16 @@ class NewCard extends Component {
   };
 
   render() {
+    const { errorMessage } = this.state;
+    if(errorMessage){
+      return (
+        <div className="w-100 d-flex justify-content-center align-items-center">
+          <div className="w-50">
+            <ErrorCard heading={errorMessage}  />
+          </div>
+        </div>
+      )
+    }
     return (
       <div className="d-flex flex-column">
         <>
