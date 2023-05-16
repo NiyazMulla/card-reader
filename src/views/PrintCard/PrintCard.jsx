@@ -7,12 +7,11 @@ import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import queryString from "query-string";
 import React, { Component } from "react";
 import { printCardDetail, printSmartCard } from "../../api/rationcard";
-import PageTitle from "../../components/PageTitle/PageTitle";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom/DialogCustom";
+import PageTitle from "../../components/PageTitle/PageTitle";
 class PrintCard extends Component {
   constructor(props) {
     super(props);
@@ -148,7 +147,7 @@ class PrintCard extends Component {
                       {row.District}
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <ButtonCustom onClick={this.onPrintClick} label='Prints' />
+                      <ButtonCustom onClick={this.onPrintClick} label='Print' />
                     </TableCell>
                   </TableRow>
                 )
