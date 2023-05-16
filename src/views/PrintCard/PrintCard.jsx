@@ -90,7 +90,8 @@ class PrintCard extends Component {
     }).catch(err => {
       console.log(err);
       this.setState({
-
+        openDialog: true,
+      errorMessageInPrint: err.message
       })
     })
   }
