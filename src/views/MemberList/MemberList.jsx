@@ -8,6 +8,7 @@ import {
   generateOTP,
   getMembersDetails,
   getStatus,
+  redirectToOdishaOneFromDelivery,
   redirectToOdishaOneFromUpdateCard,
   verifyOTP,
 } from "../../api/rationcard";
@@ -377,7 +378,7 @@ class MemberList extends Component {
   redirectToOdishaOne = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
     // let requestType = sessionStorage.getItem("REQUESTTYPE");
-    redirectToOdishaOneFromUpdateCard(requestId)
+    redirectToOdishaOneFromDelivery(requestId)
       .then((res) => {
         console.log(res);
         if (res.data) {
