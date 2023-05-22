@@ -402,7 +402,24 @@ class MemberList extends Component {
   render() {
     return (
       <div className="d-flex flex-column">
-       
+        
+        {this.state.isDelivery ? (
+          <DialogCustom
+            open={this.state.isDelivery}
+            handleClose={() => {
+              this.setState({
+                isDelivery: false,
+              });
+            }}
+            hideHeader
+          >
+            <div className="w-100 d-flex flex-column align-items-center justify-content-center">
+              {this.renderDeliveryStatus}
+            </div>
+          </DialogCustom>
+        ) : (
+          <></>
+        )}
         {this.state.openDialog ? (
           <DialogCustom
             open={this.state.openDialog}
@@ -414,7 +431,7 @@ class MemberList extends Component {
             headerData={this.renderDialogHeader()}
           >
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
-              {this.state.isDelivery ? this.renderDeliveryStatus : this.renderDialogContent()}
+              { this.renderDialogContent()}
             </div>
           </DialogCustom>
         ) : (
