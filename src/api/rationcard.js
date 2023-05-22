@@ -31,7 +31,7 @@ export const redirectToOdishaOneFromPrint = (requestId) => {
 };
 
 export const redirectToOdishaOneFromDelivery = (requestId) => {
-  let url = `${getBaseURL()}/OHCMSAPI/bskyapi/odhishaOneResapi/getResponseParam/${requestId}/PRINT`;
+  let url = `${getBaseURL()}/OHCMSAPI/bskyapi/odhishaOneResapi/getResponseParam/${requestId}/DELIVERY`;
   return axios.post(url,{});
 };
 export const redirectToOdishaOneFromCancel = (requestId) => {
