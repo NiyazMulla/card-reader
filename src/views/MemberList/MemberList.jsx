@@ -1,21 +1,23 @@
+import ErrorIcon from "@mui/icons-material/Error";
+import CircularProgress from "@mui/material/CircularProgress";
+import axios from "axios";
+import queryString from "query-string";
 import React, { Component } from "react";
 import OtpInput from "react-otp-input";
 import {
   generateOTP,
   getMembersDetails,
   getStatus,
+  redirectToOdishaOneFromUpdateCard,
   verifyOTP,
 } from "../../api/rationcard";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
+import ErrorCard from "../../components/ErrorCard/ErrorCard";
 import MemberCard from "../../components/MemberCard";
 import PageTitle from "../../components/PageTitle";
 import { LINK_CARD_LIST, LINK_NEW_CARD, LINK_PRINT_CARD } from "../../routes";
-import CircularProgress from "@mui/material/CircularProgress";
-import ErrorIcon from "@mui/icons-material/Error";
-import queryString from "query-string";
 import { REQUEST_TYPES } from "../../util/constant";
-import ErrorCard from "../../components/ErrorCard/ErrorCard";
 import { parseAPIErrorMessage } from "../../util/helper";
 class MemberList extends Component {
   constructor(props) {
@@ -43,7 +45,8 @@ class MemberList extends Component {
         heading: '',
         subHeading: '',
         message: '',
-      }
+      },
+      isDelivery: false,
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -220,6 +223,10 @@ class MemberList extends Component {
           REQUESTID: this.state.requestId,
         },
       });
+    } else if(this.state.requestType === REQUEST_TYPES.DELIVERY){
+      this.setState({
+        isDelivery: true,
+      })
     }
   };
 
@@ -355,9 +362,47 @@ class MemberList extends Component {
     }
   };
 
+  renderDeliveryStatus = () => {
+    return (
+      <>
+        <p>Card is delivered to RationCardHolder Successfully</p>
+        <b>Click Here to Re Direct Odishone</b>
+        <ButtonCustom
+          label={"Click"}
+          onClick={this.redirectToOdishaOne}
+        />
+      </>
+    )
+  }
+  redirectToOdishaOne = () => {
+    let requestId = sessionStorage.getItem("REQUESTID");
+    // let requestType = sessionStorage.getItem("REQUESTTYPE");
+    redirectToOdishaOneFromUpdateCard(requestId)
+      .then((res) => {
+        console.log(res);
+        if (res.data) {
+          let url = `${res.data.ENDPOINT_URL}`;
+          const formData = new FormData();
+          formData.append("encData", res.data.encData);
+          axios
+            .post(url, formData)
+            .then((res) => {
+              console.log(res);
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   render() {
     return (
       <div className="d-flex flex-column">
+       
         {this.state.openDialog ? (
           <DialogCustom
             open={this.state.openDialog}
@@ -369,7 +414,7 @@ class MemberList extends Component {
             headerData={this.renderDialogHeader()}
           >
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
-              {this.renderDialogContent()}
+              {this.state.isDelivery ? this.renderDeliveryStatus : this.renderDialogContent()}
             </div>
           </DialogCustom>
         ) : (

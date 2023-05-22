@@ -2,6 +2,7 @@ export const REQUEST_TYPES = {
   ENROLL: "ENROLL",
   UPDATE: "UPDATE",
   PRINT: "PRINT",
+  DELIVERY: "DELIVERY",
 };
 
 export const COMMON_ERROR = {
