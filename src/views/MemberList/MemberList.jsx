@@ -414,7 +414,12 @@ class MemberList extends Component {
             hideHeader
           >
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
-              {this.renderDeliveryStatus}
+              <p>Card is delivered to RationCardHolder Successfully</p>
+              <b>Click Here to Re Direct Odishone</b>
+              <ButtonCustom
+                label={"Click"}
+                onClick={this.redirectToOdishaOne}
+              />
             </div>
           </DialogCustom>
         ) : (
