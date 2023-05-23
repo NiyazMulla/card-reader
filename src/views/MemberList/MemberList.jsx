@@ -47,6 +47,10 @@ class MemberList extends Component {
         message: '',
       },
       isDelivery: false,
+      isRequestTypeDelivery: false,
+      noRequestRaised: false,
+      cardDelivered: false,
+
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -57,8 +61,12 @@ class MemberList extends Component {
   init = () => {
     let parsed = queryString.parse(this.props.location.search);
     if (parsed.rationCardNo) {
-      this.getMemberList(parsed)
-      this.getCardStatus(parsed.rationCardNo)
+
+      if (parsed.REQUESTTYPE === REQUEST_TYPES.DELIVERY) {
+        this.getCardStatus(parsed.rationCardNo)
+      } else {
+        this.getMemberList(parsed)
+      }
     } else {
       this.setState({
         loader: false,
@@ -69,6 +77,7 @@ class MemberList extends Component {
 
 
   getMemberList = (queryParam) => {
+
     getMembersDetails(queryParam.rationCardNo)
       .then((res) => {
         if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
@@ -107,6 +116,32 @@ class MemberList extends Component {
     }
     getStatus(payload).then(res => {
       console.log(res);
+      let parsed = queryString.parse(this.props.location.search);
+      if (res.data.StatusCode === "00") {
+        this.setState({
+          rationCardNo,
+         
+          isRequestTypeDelivery: true,
+        }, () => {
+          this.getMemberList(parsed)
+        })
+      } else if (res.data.StatusCode === '01') {
+        this.setState({
+          cardDelivered: true,
+          isRequestTypeDelivery: true,
+          deliveryDate: res.data.DeliveryDate,
+          loader: false,
+          rationCardNo,
+        });
+      } else if (res.data.StatusCode === '02') {
+        this.setState({
+          noRequestRaised: true,
+          isRequestTypeDelivery: true,
+          rationCardNo,
+         
+          loader: false,
+        });
+      }
     }).catch(err => {
       console.log(err);
     })
@@ -256,23 +291,34 @@ class MemberList extends Component {
       )
     }
 
+    {
+      this.state.isRequestTypeDelivery ?
+        <div className="w-100 d-flex align-items-center justify-content-center">
+          Printing request not raised for Ration Card No {this.state.rationCardNo}
+        </div>
+        :
+        <></>
+    }
+
     return this.state.memberList.length > 0 ? (
       this.state.memberList.map((member, index) => {
         return (
-          <div className="w-50 mb-4" key={index}>
-            <MemberCard
-              name={member["MemberName"]}
-              age={parseInt(member["Age"])}
-              gender={member["Gender"].toUpperCase()}
-              handleChangeForVerify={(option) => {
-                this.chooseOptionToVerify(index, option);
-              }}
-              adharNo={member["AadharNumber"]}
-              relationShip={member["RelationWithFamilyHead"]}
-              mobileNumber={member["Mobilenumber"]}
-            // verified
-            />
-          </div>
+          <>
+            <div className="w-50 mb-4" key={index}>
+              <MemberCard
+                name={member["MemberName"]}
+                age={parseInt(member["Age"])}
+                gender={member["Gender"].toUpperCase()}
+                handleChangeForVerify={(option) => {
+                  this.chooseOptionToVerify(index, option);
+                }}
+                adharNo={member["AadharNumber"]}
+                relationShip={member["RelationWithFamilyHead"]}
+                mobileNumber={member["Mobilenumber"]}
+              // verified
+              />
+            </div>
+          </>
         );
       })
     ) : this.state.memberList.length === 0 ? (
@@ -281,6 +327,33 @@ class MemberList extends Component {
       <></>
     );
   };
+  renderRequestDelivery = () => {
+    if (this.state.loader) {
+      return (
+        <div className="w-100 d-flex align-items-center justify-content-center">
+          <CircularProgress />
+        </div>
+      );
+    }
+    if (this.state.noRequestRaised) {
+      return (
+        <div className="w-100 d-flex align-items-center justify-content-center">
+          Printing request not raised for Ration Card No {this.state.rationCardNo}
+        </div>
+      );
+    }
+
+    if (this.state.cardDelivered) {
+      return (
+        <div className="w-100 d-flex align-items-center justify-content-center">
+          Card Printed and Delivered to the RationCard No {this.state.rationCardNo} on {this.state.deliveryDate}
+        </div>
+      );
+    }
+
+  }
+
+
   renderDialogContent = () => {
 
     if (this.state.dialogLoader) {
@@ -443,7 +516,7 @@ class MemberList extends Component {
           title={`Member details Search Result for ${this.state.rationCardNo}`}
         />
         <div className="w-100 d-flex flex-row flex-wrap">
-          {this.renderMembers()}
+          {this.state.isRequestTypeDelivery ? this.renderRequestDelivery() : this.renderMembers()}
         </div>
       </div>
     );
