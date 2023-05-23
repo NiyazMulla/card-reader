@@ -50,7 +50,7 @@ class MemberList extends Component {
       isRequestTypeDelivery: false,
       noRequestRaised: false,
       cardDelivered: false,
-
+      requestRaised: false,
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -120,8 +120,7 @@ class MemberList extends Component {
       if (res.data.StatusCode === "00") {
         this.setState({
           rationCardNo,
-         
-          isRequestTypeDelivery: true,
+          requestRaised: true,
         }, () => {
           this.getMemberList(parsed)
         })
@@ -138,12 +137,18 @@ class MemberList extends Component {
           noRequestRaised: true,
           isRequestTypeDelivery: true,
           rationCardNo,
-         
+
           loader: false,
         });
       }
     }).catch(err => {
       console.log(err);
+      let errorObj = parseAPIErrorMessage(err)
+      this.setState({
+        loader: false,
+        errorObj,
+        showError: true,
+      });
     })
   }
 
@@ -291,14 +296,8 @@ class MemberList extends Component {
       )
     }
 
-    {
-      this.state.isRequestTypeDelivery ?
-        <div className="w-100 d-flex align-items-center justify-content-center">
-          Printing request not raised for Ration Card No {this.state.rationCardNo}
-        </div>
-        :
-        <></>
-    }
+
+
 
     return this.state.memberList.length > 0 ? (
       this.state.memberList.map((member, index) => {
@@ -516,6 +515,11 @@ class MemberList extends Component {
           title={`Member details Search Result for ${this.state.rationCardNo}`}
         />
         <div className="w-100 d-flex flex-row flex-wrap">
+          {
+            this.state.requestRaised ? <div className="w-100 d-flex align-items-center justify-content-center mb-4 text-yellow">
+             Card Printed, Pending for Delivery, Kindly authenticate RationCard Number {this.state.rationCardNo} for Delivery. 
+            </div> : <></>
+          }
           {this.state.isRequestTypeDelivery ? this.renderRequestDelivery() : this.renderMembers()}
         </div>
       </div>
