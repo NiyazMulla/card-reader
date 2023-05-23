@@ -1,18 +1,18 @@
 import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import React, { Component } from "react";
 import {
   enrollCardDetail,
   getMembersDetails,
-  redirectToOdishaOneFromUpdateCard,
+  redirectToOdishaOne
 } from "../../api/rationcard";
 import AccordinoCustom from "../../components/AccordinoCustom/AccordinoCustom";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom/DialogCustom";
+import ErrorCard from "../../components/ErrorCard/ErrorCard";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import SkeltonCustom from "../../components/SkeltonCustom/SkeltonCustom";
-import CircularProgress from "@mui/material/CircularProgress";
-import ErrorCard from "../../components/ErrorCard/ErrorCard";
 class NewCard extends Component {
   constructor(props) {
     super(props);
@@ -211,8 +211,12 @@ class NewCard extends Component {
 
   redirectToOdishaOne = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
-   
-    redirectToOdishaOneFromUpdateCard(requestId)
+     let requestType = sessionStorage.getItem("REQUESTTYPE");
+    let payload = {
+      requestID: requestId,
+      actionType: requestType
+    }
+    redirectToOdishaOne(payload)
       .then((res) => {
         console.log(res);
         if (res.data) {

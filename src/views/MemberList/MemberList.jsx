@@ -8,9 +8,8 @@ import {
   generateOTP,
   getMembersDetails,
   getStatus,
-  redirectToOdishaOneFromDelivery,
-  redirectToOdishaOneFromUpdateCard,
-  verifyOTP,
+  redirectToOdishaOne,
+  verifyOTP
 } from "../../api/rationcard";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom";
@@ -59,7 +58,7 @@ class MemberList extends Component {
     let parsed = queryString.parse(this.props.location.search);
     if (parsed.rationCardNo) {
       this.getMemberList(parsed)
-      this.getCardStatus(parsed.rationCardNo)  
+      this.getCardStatus(parsed.rationCardNo)
     } else {
       this.setState({
         loader: false,
@@ -71,40 +70,40 @@ class MemberList extends Component {
 
   getMemberList = (queryParam) => {
     getMembersDetails(queryParam.rationCardNo)
-    .then((res) => {
-      if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
-        this.setState(
-          {
+      .then((res) => {
+        if (res.status && res.data[0]?.status !== "RECORDNOTEXISTS") {
+          this.setState(
+            {
+              loader: false,
+              memberList: res.data,
+              rationCardNo: queryParam.rationCardNo,
+              requestId: queryParam["REQUESTID"],
+              requestType: queryParam["REQUESTTYPE"],
+            },
+            () => {
+              sessionStorage.setItem("REQUESTID", this.state.requestId);
+              sessionStorage.setItem("REQUESTTYPE", this.state.requestType);
+            }
+          );
+        } else {
+          this.setState({
             loader: false,
-            memberList: res.data,
-            rationCardNo: queryParam.rationCardNo,
-            requestId: queryParam["REQUESTID"],
-            requestType: queryParam["REQUESTTYPE"],
-          },
-          () => {
-            sessionStorage.setItem("REQUESTID", this.state.requestId);
-            sessionStorage.setItem("REQUESTTYPE", this.state.requestType);
-          }
-        );
-      } else {
+          });
+        }
+      })
+      .catch((err) => {
+
+        let errorObj = parseAPIErrorMessage(err)
         this.setState({
           loader: false,
+          errorObj,
+          showError: true,
         });
-      }
-    })
-    .catch((err) => {
-      
-      let errorObj = parseAPIErrorMessage(err)
-      this.setState({
-        loader: false,
-        errorObj,
-        showError: true,
       });
-    });
   }
   getCardStatus = (rationCardNo) => {
     let payload = {
-      "rationCardNum":rationCardNo
+      "rationCardNum": rationCardNo
     }
     getStatus(payload).then(res => {
       console.log(res);
@@ -123,6 +122,7 @@ class MemberList extends Component {
   chooseOptionToVerify(index, selectedOption) {
     this.setState({
       openDialog: true,
+      dialogLoader: true,
     });
     if (selectedOption === "OTP") {
       generateOTP(this.state.memberList[index]["AadharNumber"])
@@ -174,10 +174,10 @@ class MemberList extends Component {
         if (res.status === 200) {
           this.setState({
             openDialog: false,
-          },() => {
+          }, () => {
             this.navigateOrShowMessage();
           })
-          
+
         }
       })
       .catch((err) => {
@@ -185,14 +185,14 @@ class MemberList extends Component {
         this.setState({
           errorVerifyOTP: err.message,
           openDialog: false,
-        },()=> {
+        }, () => {
           this.navigateOrShowMessage();
         });
-        
+
       });
   };
-  scanIRis = () => {};
-  scanBioMetric = () => {};
+  scanIRis = () => { };
+  scanBioMetric = () => { };
 
   navigateOrShowMessage = () => {
     if (this.state.requestType === REQUEST_TYPES.UPDATE) {
@@ -224,7 +224,7 @@ class MemberList extends Component {
           REQUESTID: this.state.requestId,
         },
       });
-    } else if(this.state.requestType === REQUEST_TYPES.DELIVERY){
+    } else if (this.state.requestType === REQUEST_TYPES.DELIVERY) {
       this.setState({
         isDelivery: true,
       })
@@ -249,10 +249,10 @@ class MemberList extends Component {
       );
     }
 
-    if(this.state.showError){
+    if (this.state.showError) {
       const { heading, subHeading, message } = this.state.errorObj;
       return (
-         <ErrorCard heading={heading} subHeading={subHeading} message={message} />
+        <ErrorCard heading={heading} subHeading={subHeading} message={message} />
       )
     }
 
@@ -270,7 +270,7 @@ class MemberList extends Component {
               adharNo={member["AadharNumber"]}
               relationShip={member["RelationWithFamilyHead"]}
               mobileNumber={member["Mobilenumber"]}
-              // verified
+            // verified
             />
           </div>
         );
@@ -283,7 +283,7 @@ class MemberList extends Component {
   };
   renderDialogContent = () => {
 
-    if(this.state.dialogLoader){
+    if (this.state.dialogLoader) {
       return <>Loading...</>
     }
 
@@ -363,22 +363,15 @@ class MemberList extends Component {
     }
   };
 
-  renderDeliveryStatus = () => {
-    return (
-      <>
-        <p>Card is delivered to RationCardHolder Successfully</p>
-        <b>Click Here to Re Direct Odishone</b>
-        <ButtonCustom
-          label={"Click"}
-          onClick={this.redirectToOdishaOne}
-        />
-      </>
-    )
-  }
+
   redirectToOdishaOne = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
-    // let requestType = sessionStorage.getItem("REQUESTTYPE");
-    redirectToOdishaOneFromDelivery(requestId)
+    let requestType = sessionStorage.getItem("REQUESTTYPE");
+    let payload = {
+      requestID: requestId,
+      actionType: requestType
+    }
+    redirectToOdishaOne(payload)
       .then((res) => {
         console.log(res);
         if (res.data) {
@@ -403,7 +396,7 @@ class MemberList extends Component {
   render() {
     return (
       <div className="d-flex flex-column">
-        
+
         {this.state.isDelivery ? (
           <DialogCustom
             open={this.state.isDelivery}
@@ -432,12 +425,15 @@ class MemberList extends Component {
             handleClose={() => {
               this.setState({
                 openDialog: false,
+                optData: false,
+                irisData: false,
+                bioMetric: false,
               });
             }}
             headerData={this.renderDialogHeader()}
           >
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
-              { this.renderDialogContent()}
+              {this.renderDialogContent()}
             </div>
           </DialogCustom>
         ) : (

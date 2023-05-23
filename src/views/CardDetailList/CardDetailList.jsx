@@ -4,8 +4,8 @@ import React, { Component } from "react";
 import {
   getMembersDetails,
   getMembersDetailsFromSmartCard,
-  redirectToOdishaOneFromUpdateCard,
-  updateSmartCard,
+  redirectToOdishaOne,
+  updateSmartCard
 } from "../../api/rationcard";
 import AccordinoCustom from "../../components/AccordinoCustom/AccordinoCustom";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
@@ -221,8 +221,12 @@ class CardDetailList extends Component {
 
   redirectToOdishaOne = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
-    // let requestType = sessionStorage.getItem("REQUESTTYPE");
-    redirectToOdishaOneFromUpdateCard(requestId)
+    let requestType = sessionStorage.getItem("REQUESTTYPE");
+    let payload = {
+      requestID: requestId,
+      actionType: requestType
+    }
+    redirectToOdishaOne(payload)
       .then((res) => {
         console.log(res);
         if (res.data) {

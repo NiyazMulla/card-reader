@@ -1,14 +1,19 @@
-import React from "react";
-import AppLogo from "../assets/img/logo.jpg";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { redirectToOdishaOneFromCancel } from "../api/rationcard";
 import axios from "axios";
+import React from "react";
 import { getHeaders } from "../api/config";
+import { redirectToOdishaOne } from "../api/rationcard";
+import AppLogo from "../assets/img/logo.jpg";
+import { REQUEST_TYPES } from "../util/constant";
 function Header(props) {
   const onCancel = () => {
     let requestId = sessionStorage.getItem("REQUESTID");
+    let payload = {
+      requestID: requestId,
+      actionType: REQUEST_TYPES.DELIVERY
+    }
     if (requestId) {
-      redirectToOdishaOneFromCancel(requestId)
+      redirectToOdishaOne(payload)
         .then((res) => {
           console.log(res);
           if (res.status === 200) {
@@ -37,7 +42,7 @@ function Header(props) {
   };
   return (
     <div className="header">
-      <img src={AppLogo} />
+      <img src={AppLogo} alt="lo" />
       <div
         onClick={onCancel}
         className="fw-bold d-flex align-items-center my-2 text-white text-decoration-underline"

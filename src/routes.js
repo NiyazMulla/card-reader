@@ -9,12 +9,15 @@ export const LINK_PRINT_CARD = "/print/card";
 
 export const LINK_VIEW_CARD = "/view/card";
 
+export const LINK_REPORTS = '/reports/delivery'
+
 const HOME = React.lazy(() => import("./views/HomePage"));
 const MEMBER_LIST = React.lazy(() => import("./views/MemberList"));
 const CARD_LIST = React.lazy(() => import("./views/CardDetailList"));
 const NEW_CARD = React.lazy(() => import("./views/NewCard"));
 const PRINT_CARD = React.lazy(() => import("./views/PrintCard"));
 const VIEW_CARD = React.lazy(() => import("./views/ViewCard"));
+const REPORTS_DELIVERY = React.lazy(() => import("./views/Reports/Delivery"));
 
 const routes = [
   {
@@ -46,6 +49,11 @@ const routes = [
     exact: true,
     path: LINK_VIEW_CARD,
     component: VIEW_CARD,
+  },
+  {
+    exact: true,
+    path: LINK_REPORTS,
+    component: REPORTS_DELIVERY,
   },
 ];
 export default routes;
