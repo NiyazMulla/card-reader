@@ -10,6 +10,7 @@ export const LINK_PRINT_CARD = "/print/card";
 export const LINK_VIEW_CARD = "/view/card";
 
 export const LINK_REPORTS = '/reports/delivery'
+export const LINK_REPORTS_CARD = '/reports/card/detail'
 
 const HOME = React.lazy(() => import("./views/HomePage"));
 const MEMBER_LIST = React.lazy(() => import("./views/MemberList"));
@@ -18,6 +19,7 @@ const NEW_CARD = React.lazy(() => import("./views/NewCard"));
 const PRINT_CARD = React.lazy(() => import("./views/PrintCard"));
 const VIEW_CARD = React.lazy(() => import("./views/ViewCard"));
 const REPORTS_DELIVERY = React.lazy(() => import("./views/Reports/Delivery"));
+const REPORTS_CARD_DETAIL = React.lazy(() => import("./views/Reports/CardDetail"));
 
 const routes = [
   {
@@ -54,6 +56,11 @@ const routes = [
     exact: true,
     path: LINK_REPORTS,
     component: REPORTS_DELIVERY,
+  },
+  {
+    exact: true,
+    path: LINK_REPORTS_CARD,
+    component: REPORTS_CARD_DETAIL,
   },
 ];
 export default routes;

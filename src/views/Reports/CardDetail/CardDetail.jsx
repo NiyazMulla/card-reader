@@ -12,7 +12,7 @@ import ButtonCustom from "../../../components/ButtonCustom/ButtonCustom";
 import ErrorCard from "../../../components/ErrorCard/ErrorCard";
 import React, { Component } from 'react';
 
-class Delivery extends Component {
+class CardDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,16 +36,10 @@ class Delivery extends Component {
           label: 'Branch Code'
         },
         {
-          label: 'Requested Code ON'
+          label: 'Requested By'
         },
         {
-          label: 'Delivered ON'
-        },
-        {
-          label: 'Delivered By'
-        },
-        {
-          label: 'Delivered Status'
+          label: 'Status'
         }
       ],
       loader: false,
@@ -57,9 +51,7 @@ class Delivery extends Component {
           mobileNumber: '9876543210',
           adharCardNumber: '345678901234',
           branchCode: '098',
-          requestedCodeOn: '23/09/2021',
-          deliveredOn: '25/09/2021',
-          deliveredBy: 'John',
+          requestedCodeBy: '23/09/2021',
           deliveredStatus: 'Delivered'
         },
         {
@@ -69,9 +61,7 @@ class Delivery extends Component {
           mobileNumber: '9876543210',
           adharCardNumber: '345678901234',
           branchCode: '098',
-          requestedCodeOn: '23/09/2021',
-          deliveredOn: '25/09/2021',
-          deliveredBy: 'John',
+          requestedCodeBy: '23/09/2021',
           deliveredStatus: 'Delivered'
         },
         {
@@ -81,9 +71,7 @@ class Delivery extends Component {
           mobileNumber: '9876543210',
           adharCardNumber: '345678901234',
           branchCode: '098',
-          requestedCodeOn: '23/09/2021',
-          deliveredOn: '25/09/2021',
-          deliveredBy: 'John',
+          requestedCodeBy: '23/09/2021',
           deliveredStatus: 'Delivered'
         }
       ],
@@ -152,13 +140,7 @@ class Delivery extends Component {
                       {row.branchCode}
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      {row.requestedCodeOn}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.deliveredOn}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      {row.deliveredBy}
+                      {row.requestedCodeBy}
                     </TableCell>
                      <TableCell component="th" scope="row">
                       {row.deliveredStatus}
@@ -177,7 +159,7 @@ class Delivery extends Component {
     return (
       <div>
         <PageTitle
-          title={`Delivery Report`}
+          title={`Card Detail Report`}
         />
         <div className="w-100 d-flex flex-row flex-wrap">
           {this.renderReports()}
@@ -187,4 +169,4 @@ class Delivery extends Component {
   }
 }
 
-export default Delivery;
+export default CardDetail;
