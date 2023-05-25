@@ -42,6 +42,8 @@ class PrintCard extends Component {
       ],
       errorMessage: '',
       errorMessageInPrint: '',
+      printStatusMessage: '',
+      printBtnLoader: false
     };
   }
 
@@ -81,20 +83,27 @@ class PrintCard extends Component {
     let payload = {
       rationCardNum: this.props.location.state?.rationCardNo
     }
-    printSmartCard(payload).then(res => {
-      console.log(res);
-      this.setState({
-        openDialog: true,
-        printStatusMessage: res.data.Message
-      })
-
-    }).catch(err => {
-      console.log(err);
-      this.setState({
-        openDialog: true,
-        errorMessageInPrint: err.message
+    this.setState({
+      printBtnLoader: true
+    },()=>{
+      printSmartCard(payload).then(res => {
+        console.log(res);
+        this.setState({
+          openDialog: true,
+          printBtnLoader: false,
+          printStatusMessage: res.data.Message
+        })
+  
+      }).catch(err => {
+        console.log(err);
+        this.setState({
+          openDialog: true,
+          printBtnLoader: false,
+          errorMessageInPrint: err.message
+        })
       })
     })
+    
   }
 
 
@@ -158,7 +167,7 @@ class PrintCard extends Component {
                       {row.District}
                     </TableCell>
                     <TableCell component="th" scope="row">
-                      <ButtonCustom onClick={this.onPrintClick} label='Print' />
+                      <ButtonCustom onClick={this.onPrintClick} showLoader={this.state.printBtnLoader} label='Print' />
                     </TableCell>
                   </TableRow>
                 )

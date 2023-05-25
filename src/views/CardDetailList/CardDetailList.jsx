@@ -29,6 +29,9 @@ class CardDetailList extends Component {
       cardList: [],
       cardListErrorMessage: '',
       updateCardErrorMessage: '',
+
+      cardDetailLoader: false,
+      cardUpdateLoader: false,
     };
   }
 
@@ -65,27 +68,30 @@ class CardDetailList extends Component {
   };
 
   getCardDetails = () => {
-    getMembersDetailsFromSmartCard(this.state?.rationCardNo)
+    this.setState({
+      cardDetailLoader: true,
+    }, () => {
+      getMembersDetailsFromSmartCard(this.state?.rationCardNo)
       .then((res) => {
         if (res.status) {
           if (Array.isArray(res.data) && res.data.length > 0) {
             this.setState({
               cardListErrorMessage: "",
               cardList: res.data,
-              loading: false,
+              cardDetailLoader: false,
             });
           } else if (res.data.StatusCode === "02") {
             this.setState({
               noCardFound: true,
               cardStatusMessage: res.data.Message,
-              loading: false,
+              cardDetailLoader: false,
               cardList: []
             });
           } else {
             this.setState({
               cardListErrorMessage: 'Something went wrong, Please try again later',
               cardList: [],
-              loading: false,
+              cardDetailLoader: false,
             });
           }
 
@@ -94,10 +100,12 @@ class CardDetailList extends Component {
       .catch((err) => {
         console.log(err);
         this.setState({
-          loading: false,
+          cardDetailLoader: false,
           cardListErrorMessage: err.message
         });
       });
+    })
+    
   };
 
   renderMembers = () => {
@@ -185,6 +193,7 @@ class CardDetailList extends Component {
             <ButtonCustom
               label="Click"
               color="white"
+              showLoader={this.state.cardDetailLoader}
               onClick={this.getCardDetails}
             />
           </div>
@@ -202,6 +211,7 @@ class CardDetailList extends Component {
             <ButtonCustom
               label="Click"
               color="white"
+              showLoader={this.state.cardDetailLoader}
               onClick={this.getCardDetails}
             />
           </div>
@@ -233,6 +243,7 @@ class CardDetailList extends Component {
   onUpdate = () => {
     this.setState({
       cardListErrorMessage: '',
+      cardUpdateLoader: true,
     }, () => {
       let payload = {
         rationCardNum: this.state?.rationCardNo
@@ -241,10 +252,12 @@ class CardDetailList extends Component {
         console.log(res);
         this.setState({
           openDialog: true,
+          cardUpdateLoader: false,
         });
       }).catch(err => {
         console.log(err);
         this.setState({
+          cardUpdateLoader: false,
           updateCardErrorMessage: err.message
         })
       })
@@ -335,6 +348,7 @@ class CardDetailList extends Component {
                 <div>
                   <ButtonCustom
                     label="Update Smart Card"
+                    showLoader={this.state.cardUpdateLoader}
                     onClick={this.onUpdate}
                   />
                 </div>

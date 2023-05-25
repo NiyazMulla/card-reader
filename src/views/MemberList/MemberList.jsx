@@ -54,6 +54,8 @@ class MemberList extends Component {
       noRequestRaised: false,
       cardDelivered: false,
       requestRaised: false,
+
+      verifyBtnLoader: false,
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -211,16 +213,19 @@ class MemberList extends Component {
       aadharcard: this.state.selectedAdharNo,
       otpValue: this.state.otp,
     };
-    verifyOTP(payload)
+    this.setState({
+      verifyBtnLoader: true,
+    },() => {
+      verifyOTP(payload)
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
           this.setState({
             openDialog: false,
+            verifyBtnLoader: false,
           }, () => {
             this.navigateOrShowMessage();
           })
-
         }
       })
       .catch((err) => {
@@ -228,11 +233,13 @@ class MemberList extends Component {
         this.setState({
           errorVerifyOTP: err.message,
           openDialog: false,
+          verifyBtnLoader: false,
         }, () => {
           this.navigateOrShowMessage();
         });
-
       });
+    });
+    
   };
   scanIRis = () => { };
   scanBioMetric = () => { };
@@ -403,7 +410,7 @@ class MemberList extends Component {
             </span>
           </p>
           <div className="mt-2">
-            <ButtonCustom label={"Verify"} onClick={this.sendOTP} />
+            <ButtonCustom label={"Verify"} showLoader={this.state.verifyBtnLoader} onClick={this.sendOTP} />
           </div>
           <div style={{ height: "20px", color: "red" }}>
             {this.state.errorVerifyOTP ? this.state.errorVerifyOTP : ""}
