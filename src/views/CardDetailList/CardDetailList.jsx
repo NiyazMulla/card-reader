@@ -79,6 +79,7 @@ class CardDetailList extends Component {
               cardListErrorMessage: "",
               cardList: JSON.parse(res.data.Message),
               cardDetailLoader: false,
+              noCardFound: false,
             });
           } else if (res.data.StatusCode === "02") {
             this.setState({
@@ -92,6 +93,7 @@ class CardDetailList extends Component {
               cardListErrorMessage: 'Something went wrong, Please try again later',
               cardList: [],
               cardDetailLoader: false,
+              noCardFound: false,
             });
           }
 
