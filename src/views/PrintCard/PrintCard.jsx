@@ -85,15 +85,23 @@ class PrintCard extends Component {
     }
     this.setState({
       printBtnLoader: true
-    },()=>{
+    }, () => {
       printSmartCard(payload).then(res => {
         console.log(res);
-        this.setState({
-          openDialog: true,
-          printBtnLoader: false,
-          printStatusMessage: res.data.Message
-        })
-  
+        if (res.data.StatusCode === '00') {
+          this.setState({
+            openDialog: true,
+            printBtnLoader: false,
+          })
+        } else {
+          this.setState({
+            openDialog: true,
+            printBtnLoader: false,
+            printStatusMessage: res.data.Message
+          })
+        }
+
+
       }).catch(err => {
         console.log(err);
         this.setState({
@@ -103,7 +111,7 @@ class PrintCard extends Component {
         })
       })
     })
-    
+
   }
 
 
@@ -209,11 +217,18 @@ class PrintCard extends Component {
                     <ButtonCustom
                       label={"Click"}
                       onClick={() => {
-                        this.setState({
-                          openDialog: false,
-                        })
+                        if (this.state.printStatusMessage) {
+                          this.setState({
+                            openDialog: false
+                          })
+                        } else {
+                          this.onPrintClick()
+                        }
+
                       }}
-                    /></>
+                    />
+
+                  </>
               }
 
             </div>
