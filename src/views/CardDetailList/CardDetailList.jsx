@@ -74,10 +74,10 @@ class CardDetailList extends Component {
       getMembersDetailsFromSmartCard(this.state?.rationCardNo)
       .then((res) => {
         if (res.status) {
-          if (Array.isArray(res.data) && res.data.length > 0) {
+          if (res.data.StatusCode === "00") {
             this.setState({
               cardListErrorMessage: "",
-              cardList: res.data,
+              cardList: JSON.parse(res.data.Message),
               cardDetailLoader: false,
             });
           } else if (res.data.StatusCode === "02") {
