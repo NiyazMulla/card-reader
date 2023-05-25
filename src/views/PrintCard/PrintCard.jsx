@@ -85,13 +85,14 @@ class PrintCard extends Component {
       console.log(res);
       this.setState({
         openDialog: true,
+        printStatusMessage: res.data.Message
       })
 
     }).catch(err => {
       console.log(err);
       this.setState({
         openDialog: true,
-      errorMessageInPrint: err.message
+        errorMessageInPrint: err.message
       })
     })
   }
@@ -109,12 +110,12 @@ class PrintCard extends Component {
   };
 
   renderTable = () => {
-    const { columns,tableErrorMessage } = this.state;
-    if(tableErrorMessage){
+    const { columns, tableErrorMessage } = this.state;
+    if (tableErrorMessage) {
       return (
         <div className="w-100 d-flex justify-content-center align-items-center">
           <div className="w-50">
-            <ErrorCard heading={tableErrorMessage}  />
+            <ErrorCard heading={tableErrorMessage} />
           </div>
         </div>
       )
@@ -172,11 +173,11 @@ class PrintCard extends Component {
 
   render() {
     const { errorMessage } = this.state;
-    if(errorMessage){
+    if (errorMessage) {
       return (
         <div className="w-100 d-flex justify-content-center align-items-center">
           <div className="w-50">
-            <ErrorCard heading={errorMessage}  />
+            <ErrorCard heading={errorMessage} />
           </div>
         </div>
       )
@@ -187,23 +188,25 @@ class PrintCard extends Component {
           <DialogCustom open={this.state.openDialog} hideHeader>
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
               {
-                this.state.errorMessageInPrint ?  
+                this.state.errorMessageInPrint ?
                   <div className="w-100 d-flex justify-content-center align-items-center">
                     <div className="w-50">
-                      <ErrorCard heading={this.state.errorMessageInPrint}  />
+                      <ErrorCard heading={this.state.errorMessageInPrint} />
                     </div>
-                  </div> 
-              : <> <p>Smart Card has been printed Successfully</p>
-                <ButtonCustom
-                  label={"Click"}
-                  onClick={() => {
-                    this.setState({
-                      openDialog: false,
-                    })
-                  }}
-                /></>
+                  </div>
+                  : <> <p>{
+                    this.state.printStatusMessage ? this.state.printStatusMessage : 'Smart Card has been printed successfully'}
+                  </p>
+                    <ButtonCustom
+                      label={"Click"}
+                      onClick={() => {
+                        this.setState({
+                          openDialog: false,
+                        })
+                      }}
+                    /></>
               }
-             
+
             </div>
           </DialogCustom>
         </>
