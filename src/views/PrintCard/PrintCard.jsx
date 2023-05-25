@@ -216,15 +216,15 @@ class PrintCard extends Component {
                   </p>
                     <ButtonCustom
                       label={"Click"}
+                      showLoader={this.state.printBtnLoader}
                       onClick={() => {
                         if (this.state.printStatusMessage) {
+                          this.onPrintClick()
+                        } else {
                           this.setState({
                             openDialog: false
                           })
-                        } else {
-                          this.onPrintClick()
                         }
-
                       }}
                     />
 
