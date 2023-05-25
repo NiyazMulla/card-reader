@@ -1,5 +1,8 @@
 import ErrorIcon from "@mui/icons-material/Error";
 import CircularProgress from "@mui/material/CircularProgress";
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ContactSupportIcon from '@mui/icons-material/ContactSupport';
 import axios from "axios";
 import queryString from "query-string";
 import React, { Component } from "react";
@@ -334,19 +337,37 @@ class MemberList extends Component {
         </div>
       );
     }
+
+
     if (this.state.noRequestRaised) {
       return (
-        <div className="w-100 d-flex align-items-center justify-content-center">
-          Printing request not raised for Ration Card No {this.state.rationCardNo}
+
+        <div className="w-100 d-flex align-items-center justify-content-center mb-4 ">
+          <div className="w-75 d-flex flex-column border justify-content-center align-items-center rounded-pill p-4 bg-Error">
+            <div>
+              <ContactSupportIcon />
+            </div>
+            <div className="fw-bold fs-5 ">
+              Printing request not raised for Ration Card No {this.state.rationCardNo}
+            </div>
+          </div>
         </div>
       );
     }
 
     if (this.state.cardDelivered) {
       return (
-        <div className="w-100 d-flex align-items-center justify-content-center">
-          Card Printed and Delivered to the RationCard No {this.state.rationCardNo} on {this.state.deliveryDate}
+        <div className="w-100 d-flex align-items-center justify-content-center mb-4 ">
+          <div className="w-75 d-flex flex-column border justify-content-center align-items-center rounded-pill p-4 bg-Success">
+            <div>
+              <CheckCircleIcon />
+            </div>
+            <div className="fw-bold fs-5 ">
+            Card Printed and Delivered to the RationCard No {this.state.rationCardNo} on {this.state.deliveryDate}
+            </div>
+          </div>
         </div>
+        
       );
     }
 
@@ -516,8 +537,15 @@ class MemberList extends Component {
         />
         <div className="w-100 d-flex flex-row flex-wrap">
           {
-            this.state.requestRaised ? <div className="w-100 d-flex align-items-center justify-content-center mb-4 text-yellow">
-             Card Printed, Pending for Delivery, Kindly authenticate RationCard Number {this.state.rationCardNo} for Delivery. 
+            this.state.requestRaised ? <div className="w-100 d-flex align-items-center justify-content-center mb-4 ">
+              <div className="w-75 d-flex flex-column border justify-content-center align-items-center rounded-pill p-4 bg-Warning">
+                <div>
+                  <VerifiedUserIcon />
+                </div>
+                <div className="fw-bold fs-5 ">
+                  Card Printed, Pending for Delivery, Kindly authenticate RationCard Number {this.state.rationCardNo} for Delivery.
+                </div>
+              </div>
             </div> : <></>
           }
           {this.state.isRequestTypeDelivery ? this.renderRequestDelivery() : this.renderMembers()}

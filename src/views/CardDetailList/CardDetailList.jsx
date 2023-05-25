@@ -13,7 +13,7 @@ import DialogCustom from "../../components/DialogCustom/DialogCustom";
 import ErrorCard from "../../components/ErrorCard/ErrorCard";
 import PageTitle from "../../components/PageTitle/PageTitle";
 import SkeltonCustom from "../../components/SkeltonCustom/SkeltonCustom";
-
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 class CardDetailList extends Component {
   constructor(props) {
     super(props);
@@ -56,7 +56,7 @@ class CardDetailList extends Component {
             memberListErrorMessage: err.message
           });
         });
-    }else {
+    } else {
       this.setState({
         loading: false,
         errorMessage: "Invalid Request, Please contact admin",
@@ -68,11 +68,27 @@ class CardDetailList extends Component {
     getMembersDetailsFromSmartCard(this.state?.rationCardNo)
       .then((res) => {
         if (res.status) {
-          this.setState({
-            cardListErrorMessage: "",
-            cardList: res.data,
-            loading: false,
-          });
+          if (Array.isArray(res.data) && res.data.length > 0) {
+            this.setState({
+              cardListErrorMessage: "",
+              cardList: res.data,
+              loading: false,
+            });
+          } else if (res.data.StatusCode === "02") {
+            this.setState({
+              noCardFound: true,
+              cardStatusMessage: res.data.Message,
+              loading: false,
+              cardList: []
+            });
+          } else {
+            this.setState({
+              cardListErrorMessage: 'Something went wrong, Please try again later',
+              cardList: [],
+              loading: false,
+            });
+          }
+
         }
       })
       .catch((err) => {
@@ -85,7 +101,7 @@ class CardDetailList extends Component {
   };
 
   renderMembers = () => {
-    const {memberListErrorMessage } = this.state;
+    const { memberListErrorMessage } = this.state;
     if (this.state.loading) {
       return (
         <div className="w-100 mb-4">
@@ -99,11 +115,11 @@ class CardDetailList extends Component {
         </div>
       );
     }
-    if(memberListErrorMessage){
+    if (memberListErrorMessage) {
       return (
         <div className="w-100 d-flex justify-content-center align-items-center">
           <div className="w-50">
-            <ErrorCard heading={memberListErrorMessage}  />
+            <ErrorCard heading={memberListErrorMessage} />
           </div>
         </div>
       )
@@ -122,15 +138,15 @@ class CardDetailList extends Component {
               adharNo={member["AadharNumber"]}
               relationShip={member["RelationWithFamilyHead"]}
               mobileNumber={member["Mobilenumber"]}
-              // verified
+            // verified
             />
           </div>
         );
       })
     ) : this.state.memberList.length === 0 ? (
       <div className="w-100 d-flex justify-content-center align-items-center">
-        <div className="w-50"> 
-          <p style={{fontSize:'32px',color: '#E5F8FF'}}> No Members Found </p>
+        <div className="w-50">
+          <p style={{ fontSize: '32px', color: '#E5F8FF' }}> No Members Found </p>
         </div>
       </div>
     ) : (
@@ -139,21 +155,38 @@ class CardDetailList extends Component {
   };
 
   renderCardList = () => {
-    const { cardList,cardListErrorMessage,updateCardErrorMessage } = this.state;
-    if(cardListErrorMessage){
+    const { cardList, cardListErrorMessage, updateCardErrorMessage, noCardFound, cardStatusMessage } = this.state;
+    if (cardListErrorMessage) {
       return (
         <div className="w-100 d-flex justify-content-center align-items-center">
           <div className="w-50">
-            <ErrorCard heading={cardListErrorMessage}  />
+            <ErrorCard heading={cardListErrorMessage} />
           </div>
         </div>
       )
     }
-    if(updateCardErrorMessage){
+    if (updateCardErrorMessage) {
       return (
         <div className="w-100 d-flex justify-content-center align-items-center">
           <div className="w-50">
-            <ErrorCard heading={updateCardErrorMessage}  />
+            <ErrorCard heading={updateCardErrorMessage} />
+          </div>
+        </div>
+      )
+    }
+    if (noCardFound && cardStatusMessage) {
+      return (
+        <div className="w-75 d-flex flex-column border justify-content-center align-items-center rounded-pill p-4 bg-Info">
+          <div>
+            <NotInterestedIcon />
+          </div>
+          <div className="fw-bold fs-5 ">{cardStatusMessage}</div>
+          <div>
+            <ButtonCustom
+              label="Click"
+              color="white"
+              onClick={this.getCardDetails}
+            />
           </div>
         </div>
       )
@@ -189,7 +222,7 @@ class CardDetailList extends Component {
               relationShip={member["RelationWithFamilyHead"]}
               mobileNumber={member["Mobilenumber"]}
               memberId={member['MEMBERID']}
-              // verified
+            // verified
             />
           </div>
         );
@@ -200,7 +233,7 @@ class CardDetailList extends Component {
   onUpdate = () => {
     this.setState({
       cardListErrorMessage: '',
-    },() => {
+    }, () => {
       let payload = {
         rationCardNum: this.state?.rationCardNo
       }
@@ -216,7 +249,7 @@ class CardDetailList extends Component {
         })
       })
     })
-    
+
   }
 
   redirectToOdishaOne = () => {
@@ -250,11 +283,11 @@ class CardDetailList extends Component {
 
   render() {
     const { errorMessage } = this.state;
-    if(errorMessage){
+    if (errorMessage) {
       return (
         <div className="w-100 d-flex justify-content-center align-items-center">
           <div className="w-50">
-            <ErrorCard heading={errorMessage}  />
+            <ErrorCard heading={errorMessage} />
           </div>
         </div>
       )

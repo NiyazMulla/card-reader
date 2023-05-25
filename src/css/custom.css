@@ -130,3 +130,19 @@ body {
   background-color: var(--primaryColor);
   color: white;
 }
+.bg-Warning{
+  background-color: #ff9800;
+  color: white;
+}
+.bg-Error{
+  background-color: #f44336;
+  color: white;
+}
+.bg-Info{
+  background-color: #2196f3;
+  color: white;
+}
+.bg-Success{
+  background-color: #4caf50;
+  color: white;
+}
