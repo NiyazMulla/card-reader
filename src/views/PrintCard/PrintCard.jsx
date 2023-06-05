@@ -12,6 +12,7 @@ import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
 import DialogCustom from "../../components/DialogCustom/DialogCustom";
 import ErrorCard from "../../components/ErrorCard/ErrorCard";
 import PageTitle from "../../components/PageTitle/PageTitle";
+import queryString from "query-string";
 class PrintCard extends Component {
   constructor(props) {
     super(props);
@@ -20,6 +21,7 @@ class PrintCard extends Component {
       rows: [],
       tableErrorMessage: '',
       openDialog: false,
+      rationCardNo: '',
       columns: [
         {
           label: 'Ration Card Number'
@@ -48,14 +50,28 @@ class PrintCard extends Component {
   }
 
   componentDidMount() {
-    this.getCardDetail();
+    let parsed = queryString.parse(this.props.location.search);
+    if (parsed.rationCardNo) {
+      this.setState({
+        rationCardNo: parsed.rationCardNo
+      },() =>{
+        this.getCardDetail();
+      })
+      
+    } else {
+      this.setState({
+        loader: false,
+        errorMessage: "Invalid Request, Please contact admin",
+      });
+    }
+   
   }
 
   getCardDetail = () => {
 
-    if (this.props.location.state?.rationCardNo) {
+    if (this.state.rationCardNo) {
       let payload = {
-        rationCardNum: this.props.location.state?.rationCardNo
+        rationCardNum: this.state.rationCardNo
       }
       printCardDetail(payload).then(res => {
         console.log(res);
@@ -81,7 +97,7 @@ class PrintCard extends Component {
 
   onPrintClick = () => {
     let payload = {
-      rationCardNum: this.props.location.state?.rationCardNo
+      rationCardNum: this.state.rationCardNo
     }
     this.setState({
       printBtnLoader: true
