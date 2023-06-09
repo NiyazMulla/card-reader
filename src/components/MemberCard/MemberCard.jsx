@@ -132,19 +132,6 @@ function MemberCard(props) {
                   <ListItemText primary="IRIS" />
                 </ListItemButton>
               </ListItem>
-              <ListItem disablePadding>
-                <ListItemButton
-                  onClick={() => {
-                    handleClose();
-                    props.handleChangeForVerify("BIOMETRIC");
-                  }}
-                >
-                  <ListItemIcon>
-                    <FingerprintIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="BIOMETRIC" />
-                </ListItemButton>
-              </ListItem>
             </List>
             <Divider />
           </Popover>
