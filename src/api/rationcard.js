@@ -69,3 +69,9 @@ export const getStatus = (payload) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/checkDeliveryStatus`;
   return axios.post(url,payload,getHeaders());
 }
+
+
+export const verifyIRIS = (payload) => {
+  let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/verifyIRIS`;
+  return axios.post(url,payload,getHeaders());
+}

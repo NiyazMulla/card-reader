@@ -12,6 +12,7 @@ import {
   getMembersDetails,
   getStatus,
   redirectToOdishaOne,
+  verifyIRIS,
   verifyOTP
 } from "../../api/rationcard";
 import ButtonCustom from "../../components/ButtonCustom/ButtonCustom";
@@ -55,7 +56,10 @@ class MemberList extends Component {
       cardDelivered: false,
       requestRaised: false,
 
+      errorMessageVerifyOtp: "",
       verifyBtnLoader: false,
+      errorMessageVerifyIris: "",
+      verifyIRISLoader: false,
     };
     this.chooseOptionToVerify = this.chooseOptionToVerify.bind(this);
   }
@@ -231,17 +235,36 @@ class MemberList extends Component {
       .catch((err) => {
         console.log(err);
         this.setState({
-          errorVerifyOTP: err.message,
-          openDialog: false,
+          errorMessageVerifyOtp: err.message,
           verifyBtnLoader: false,
-        }, () => {
-          this.navigateOrShowMessage();
         });
       });
     });
     
   };
-  scanIRis = () => { };
+  scanIRis = () => { 
+    this.setState({
+      verifyIRISLoader: true,
+    },() =>{
+      verifyIRIS().then(res => {
+        console.log(res);
+        this.setState({
+          verifyIRISLoader: false,
+          openDialog: false,
+        }, () => {
+          this.navigateOrShowMessage();
+        }
+        )
+      }).catch(err => {
+        console.log(err);
+        this.setState({
+          errorMessageVerifyIris: err.message,
+          verifyBtnLoader: false,
+        });
+      })
+    });
+    
+  };
   scanBioMetric = () => { };
 
   navigateOrShowMessage = () => {
@@ -413,7 +436,7 @@ class MemberList extends Component {
             <ButtonCustom label={"Verify"} showLoader={this.state.verifyBtnLoader} onClick={this.sendOTP} />
           </div>
           <div style={{ height: "20px", color: "red" }}>
-            {this.state.errorVerifyOTP ? this.state.errorVerifyOTP : ""}
+            {this.state.errorMessageVerifyOtp ? this.state.errorMessageVerifyOtp : ""}
           </div>
         </>
       );
@@ -421,7 +444,10 @@ class MemberList extends Component {
       return (
         <>
           <p className="fs-4 text-primary">Scan the image</p>
-          <ButtonCustom label={"Process Scan"} />
+          <ButtonCustom label={"Process Scan"} onClick={this.scanIRis} />
+          <div style={{ height: "20px", color: "red" }}>
+            {this.state.errorMessageVerifyIris ? this.state.errorMessageVerifyIris : ""}
+          </div>
         </>
       );
     } else if (this.state.bioMetric) {
@@ -534,6 +560,9 @@ class MemberList extends Component {
           >
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
               {this.renderDialogContent()}
+              <div>
+                {this.state.errorMessage?this.state.errorMessage:""}
+              </div>
             </div>
           </DialogCustom>
         ) : (
