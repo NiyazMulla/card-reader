@@ -73,5 +73,5 @@ export const getStatus = (payload) => {
 
 export const verifyIRIS = (payload) => {
   let url = `${getBaseURL()}/OHCMSAPI/bskyapi/bskyapiService/verifyIRIS`;
-  return axios.post(url,payload,getHeaders());
+  return axios.post(url,payload);
 }
