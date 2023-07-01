@@ -243,10 +243,14 @@ class MemberList extends Component {
     
   };
   scanIRis = () => { 
+    let payload = {
+      aadharcard: this.state.selectedAdharNo,
+      otpValue: this.state.otp,
+    };
     this.setState({
       verifyIRISLoader: true,
     },() =>{
-      verifyIRIS().then(res => {
+      verifyIRIS(payload).then(res => {
         console.log(res);
         this.setState({
           verifyIRISLoader: false,
