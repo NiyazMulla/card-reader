@@ -219,46 +219,62 @@ class MemberList extends Component {
     };
     this.setState({
       verifyBtnLoader: true,
-    },() => {
+    }, () => {
       verifyOTP(payload)
-      .then((res) => {
-        console.log(res);
-        if (res.status === 200) {
+        .then((res) => {
+          console.log(res);
+          if (res.status === 200) {
+            if (res.data.status === "ERROR") {
+              this.setState({
+                errorMessageVerifyOtp: res.data.errMsg,
+                verifyBtnLoader: false,
+              });
+            } else {
+              this.setState({
+                openDialog: false,
+                verifyBtnLoader: false,
+              }, () => {
+                this.navigateOrShowMessage();
+              })
+            }
+
+          }
+        })
+        .catch((err) => {
+          console.log(err);
           this.setState({
-            openDialog: false,
+            errorMessageVerifyOtp: err.message,
             verifyBtnLoader: false,
-          }, () => {
-            this.navigateOrShowMessage();
-          })
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        this.setState({
-          errorMessageVerifyOtp: err.message,
-          verifyBtnLoader: false,
+          });
         });
-      });
     });
-    
+
   };
-  scanIRis = () => { 
+  scanIRis = () => {
     let payload = {
       aadharcard: this.state.selectedAdharNo,
       otpValue: this.state.otp,
     };
     this.setState({
       verifyIRISLoader: true,
-    },() =>{
+    }, () => {
       verifyIRIS(payload).then(res => {
         console.log(res);
-        this.setState({
-          verifyIRISLoader: false,
-          openDialog: false,
-        }, () => {
-          this.navigateOrShowMessage();
+        if (res.data.status === "ERROR") {
+          this.setState({
+            errorMessageVerifyOtp: res.data.errMsg,
+            verifyBtnLoader: false,
+          });
+        } else {
+          this.setState({
+            verifyIRISLoader: false,
+            openDialog: false,
+          }, () => {
+            this.navigateOrShowMessage();
+          }
+          )
         }
-        )
+
       }).catch(err => {
         console.log(err);
         this.setState({
@@ -267,7 +283,7 @@ class MemberList extends Component {
         });
       })
     });
-    
+
   };
   scanBioMetric = () => { };
 
@@ -397,11 +413,11 @@ class MemberList extends Component {
               <CheckCircleIcon />
             </div>
             <div className="fw-bold fs-5 ">
-            Card Printed and Delivered to the RationCard No {this.state.rationCardNo} on {this.state.deliveryDate}
+              Card Printed and Delivered to the RationCard No {this.state.rationCardNo} on {this.state.deliveryDate}
             </div>
           </div>
         </div>
-        
+
       );
     }
 
@@ -432,6 +448,7 @@ class MemberList extends Component {
             <span
               className="text-decoration-underline"
               style={{ cursor: "pointer" }}
+            // on
             >
               Resend OTP
             </span>
@@ -565,7 +582,7 @@ class MemberList extends Component {
             <div className="w-100 d-flex flex-column align-items-center justify-content-center">
               {this.renderDialogContent()}
               <div>
-                {this.state.errorMessage?this.state.errorMessage:""}
+                {this.state.errorMessage ? this.state.errorMessage : ""}
               </div>
             </div>
           </DialogCustom>
