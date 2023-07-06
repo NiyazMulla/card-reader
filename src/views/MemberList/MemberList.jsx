@@ -177,15 +177,26 @@ class MemberList extends Component {
       generateOTP(this.state.memberList[index]["AadharNumber"])
         .then((res) => {
           console.log(res);
+          
+
           if (res.status === 200) {
-            this.setState({
-              openDialog: true,
-              optData: true,
-              irisData: false,
-              bioMetric: false,
-              dialogLoader: false,
-              selectedAdharNo: this.state.memberList[index]["AadharNumber"],
-            });
+            if (res.data.status === "ERROR") {
+              this.setState({
+                dialogLoader: false,
+                isErrorInOTP: true,
+                errorMessageVerifyOtp: res.data.message,
+              });
+            }else{
+              this.setState({
+                openDialog: true,
+                optData: true,
+                irisData: false,
+                bioMetric: false,
+                dialogLoader: false,
+                selectedAdharNo: this.state.memberList[index]["AadharNumber"],
+              });
+            }
+           
           }
         })
         .catch((err) => {
